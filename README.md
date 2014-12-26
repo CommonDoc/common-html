@@ -1,5 +1,7 @@
 # cd-html
 
+[![Build Status](https://travis-ci.org/CommonDoc/cd-html.svg)](https://travis-ci.org/CommonDoc/cd-html)
+
 An HTML parser/emitter for [CommonDoc](https://github.com/CommonDoc/common-doc).
 
 # Usage
