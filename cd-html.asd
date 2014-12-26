@@ -1,0 +1,16 @@
+(defsystem cd-html
+  :author "Fernando Borretti <eudoxiahp@gmail.com>"
+  :maintainer "Fernando Borretti <eudoxiahp@gmail.com>"
+  :license "MIT"
+  :version "0.1"
+  :depends-on (:common-doc
+               :cl-markup)
+  :components ((:module "src"
+                :serial t
+                :components
+                ((:file "cd-html"))))
+  :description "An HTML parser/emitter for CommonDoc."
+  :long-description
+  #.(uiop:read-file-string
+     (uiop:subpathname *load-pathname* "README.md"))
+  :in-order-to ((test-op (test-op cd-html-test))))
