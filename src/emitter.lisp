@@ -1,8 +1,8 @@
 (in-package :cl-user)
-(defpackage common-doc.html
+(defpackage common-doc.html.emitter
   (:use :cl :common-doc)
   (:export :node-to-html-string))
-(in-package :common-doc.html)
+(in-package :common-doc.html.emitter)
 
 ;;; Utilities
 

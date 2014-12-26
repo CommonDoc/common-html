@@ -8,7 +8,7 @@
 (in-suite tests)
 
 (defun emit-equal (node string)
-  (equal (common-doc.html:node-to-html-string node) string))
+  (equal (common-doc.html.emitter:node-to-html-string node) string))
 
 (test text
   (is-true

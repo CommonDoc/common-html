@@ -8,7 +8,7 @@
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "cd-html"))))
+                ((:file "emitter"))))
   :description "An HTML parser/emitter for CommonDoc."
   :long-description
   #.(uiop:read-file-string
