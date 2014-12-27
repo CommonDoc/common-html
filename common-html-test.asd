@@ -1,4 +1,4 @@
-(defsystem cd-html-test
+(defsystem common-html-test
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:cd-html
@@ -6,4 +6,4 @@
   :components ((:module "t"
                 :serial t
                 :components
-                ((:file "cd-html")))))
+                ((:file "common-html")))))
