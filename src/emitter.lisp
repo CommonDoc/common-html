@@ -1,8 +1,8 @@
 (in-package :cl-user)
-(defpackage common-doc.html.emitter
+(defpackage common-html.emitter
   (:use :cl :common-doc)
   (:export :node-to-html-string))
-(in-package :common-doc.html.emitter)
+(in-package :common-html.emitter)
 
 ;;; Utilities
 
@@ -109,7 +109,7 @@
        (:head
         (:title (title node)))
        (:body
-        (emit (content node))))
+        (emit (children node))))
       nil))
 
 (defun node-to-html-string (node)

@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage common-doc.html-test
+(defpackage common-html-test
   (:use :cl :fiveam)
   (:import-from :common-doc
                 :doc
@@ -12,14 +12,14 @@
                 :<code>
                 :<superscript>
                 :<subscript>))
-(in-package :common-doc.html-test)
+(in-package :common-html-test)
 
 (def-suite tests
   :description "cd-html tests.")
 (in-suite tests)
 
 (defun emit-equal (node string)
-  (equal (common-doc.html.emitter:node-to-html-string node) string))
+  (equal (common-html.emitter:node-to-html-string node) string))
 
 (test text
   (is-true
