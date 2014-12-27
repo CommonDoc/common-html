@@ -1,21 +1,10 @@
 (in-package :cl-user)
 (defpackage common-html-test
-  (:use :cl :fiveam)
-  (:import-from :common-doc
-                :doc
-                :<text-node>
-                :<paragraph>
-                :<bold>
-                :<italic>
-                :<underline>
-                :<strikethrough>
-                :<code>
-                :<superscript>
-                :<subscript>))
+  (:use :cl :fiveam :common-doc))
 (in-package :common-html-test)
 
 (def-suite tests
-  :description "cd-html tests.")
+  :description "CommonHtml tests.")
 (in-suite tests)
 
 (defun emit-equal (node string)
@@ -83,6 +72,41 @@
                 ()
                 (<text-node>
                  (:text "test")))
-               "<sub>test</sub>")))
+               "<sub>test</sub>"))
+  (is-true
+   (emit-equal (doc
+                <bold>
+                ()
+                (<italic>
+                 ()
+                 (<underline>
+                  ()
+                  (<text-node>
+                   (:text "test")))))
+               "<b><i><u>test</u></i></b>")))
+
+(test code
+  (is-true
+   (emit-equal (doc
+                <verbatim>
+                (:text "1 2 3"))
+               "<pre>1 2 3</pre>"))
+  (is-true
+   (emit-equal (doc
+                <code-block>
+                (:language "lisp")
+                (<verbatim>
+                 (:text "1 2 3")))
+               "<code language=\"lisp\"><pre>1 2 3</pre></code>")))
+
+(test links
+  (let ((uri "http://example.com/"))
+    (is-true
+     (emit-equal (doc
+                  <web-link>
+                  (:uri (quri:uri uri))
+                  (<text-node>
+                   (:text "test")))
+                 (format nil "<a href=\"~A\">test</a>" uri)))))
 
 (run! 'tests)

@@ -1,17 +1,21 @@
 (in-package :cl-user)
 (defpackage common-html.emitter
   (:use :cl :common-doc)
-  (:export :node-to-html-string))
+  (:export :node-to-html-string)
+  (:documentation "Emit HTML5 from a CommonDoc document."))
 (in-package :common-html.emitter)
 
 ;;; Utilities
 
 (defmacro html (&rest body)
+  "A wrapper around cl-markup's `markup` macro which works better in recursive
+contexts."
   `(progn
      (markup:markup ,@body)
      nil))
 
-(defvar *section-depth*)
+(defvar *section-depth*
+  "The depth of `<section>` classes. Used to produce header numbers, e.g. `h1, `h3`.")
 
 ;;; Emit methods
 
@@ -19,13 +23,16 @@
   (:documentation "Create an HTML representation of a CommonDoc document."))
 
 (defmethod emit ((list list))
+  "Emit a list."
   (loop for elem in list do (emit elem)))
 
 (defmacro define-emitter (class &rest body)
+  "Define an emitter method."
   `(defmethod emit ((node ,class))
      ,@body))
 
 (defmacro define-child-emitter (class &rest tag)
+  "Define a simple emitter for elements with `children`."
   `(define-emitter ,class
        (html (,@tag (emit (children node))))))
 
