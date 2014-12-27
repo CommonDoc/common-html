@@ -17,7 +17,7 @@ script:
                  (lambda (c h)
                    (declare (ignore c h))
                    (uiop:quit -1)))'
-       -e '(ql:quickload :cd-html-test)'
+       -e '(ql:quickload :common-html-test)'
 
 notifications:
   email:
