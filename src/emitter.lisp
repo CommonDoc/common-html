@@ -36,6 +36,11 @@ contexts."
   `(define-emitter ,class
        (html (,@tag (emit (children node))))))
 
+(define-emitter <content-node>
+  "The generic emitter for content nodes."
+  (loop for child in (children node) do
+    (emit child)))
+
 (define-emitter <text-node>
     (progn
       (write-string (text node) markup:*output-stream*)
