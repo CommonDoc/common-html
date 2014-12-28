@@ -3,16 +3,23 @@
   (:use :cl :fiveam :common-doc))
 (in-package :common-html-test)
 
-(def-suite tests
-  :description "CommonHtml tests.")
-(in-suite tests)
+;;; Utils
 
 (defun emit-equal (node string)
   (equal (common-html.emitter:node-to-html-string node) string))
 
+(defun mk-text (string)
+  (doc <text-node> (:text string)))
+
+;;; Tests
+
+(def-suite tests
+  :description "CommonHtml tests.")
+(in-suite tests)
+
 (test text
   (is-true
-   (emit-equal (doc <text-node> (:text "test")) "test")))
+   (emit-equal (mk-text "test") "test")))
 
 (test paragraphs
   (is-true
@@ -108,5 +115,35 @@
                   (<text-node>
                    (:text "test")))
                  (format nil "<a href=\"~A\">test</a>" uri)))))
+
+(test section
+  (let ((document
+          (doc
+           <section>
+           (:title (mk-text "Sec 1"))
+           (<section>
+            (:title (mk-text "Sec 1.1"))
+            (<section>
+             (:title (mk-text "Sec 1.1.1"))))
+           (<section>
+            (:title (mk-text "Sec 1.2"))))))
+    (is-true
+     (emit-equal document
+                 (format nil "~{~A~}"
+                         (list "<h1>Sec 1</h1>"
+                               "<h2>Sec 1.1</h2>"
+                               "<h3>Sec 1.1.1</h3>"
+                               "<h2>Sec 1.2</h2>"))))))
+
+(test document
+  (let ((document
+          (doc
+           <document>
+           (:title "My Title")
+           (<text-node>
+            (:text "test")))))
+    (is-true
+     (emit-equal document
+                 "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>"))))
 
 (run! 'tests)

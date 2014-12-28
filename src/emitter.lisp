@@ -97,9 +97,10 @@ contexts."
 (define-emitter <section>
   (macrolet ((section-emitter (tag)
                `(progn
-                  (html (,tag (emit (title node))))
+                  (html (,tag (node-to-html-string (title node))))
                   (incf *section-depth*)
-                  (emit (children node))
+                  (if (slot-boundp node 'children)
+                      (emit (children node)))
                   (decf *section-depth*))))
     (case *section-depth*
       (1 (section-emitter :h1))
