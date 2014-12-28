@@ -37,7 +37,9 @@ contexts."
        (html (,@tag (emit (children node))))))
 
 (define-emitter <text-node>
-    (write-string (text node) markup:*output-stream*))
+    (progn
+      (write-string (text node) markup:*output-stream*)
+      nil))
 
 (define-child-emitter <paragraph> :p)
 (define-child-emitter <bold> :b)
@@ -70,8 +72,8 @@ contexts."
 
 (define-child-emitter <list-item> :li)
 (define-emitter <definition>
-  (html (:dt (node-to-html-string (term node)))
-        (:dd (node-to-html-string (definition node)))))
+  (html (:dt (emit (term node)))
+        (:dd (emit (definition node)))))
 (define-emitter <unordered-list>
   (html (:ul (emit (items node)))))
 (define-emitter <ordered-list>
@@ -100,7 +102,7 @@ contexts."
 (define-emitter <section>
   (macrolet ((section-emitter (tag)
                `(progn
-                  (html (,tag (node-to-html-string (title node))))
+                  (html (,tag (emit (title node))))
                   (incf *section-depth*)
                   (if (slot-boundp node 'children)
                       (emit (children node)))
