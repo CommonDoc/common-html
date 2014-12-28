@@ -24,7 +24,7 @@
   (is-true
    (emit-equal (mk-text "test") "test")))
 
-(test paragraphs
+(test paragraph
   (is-true
    (emit-equal (doc
                 <paragraph>
@@ -109,7 +109,7 @@
                  (:text "1 2 3")))
                "<code language=\"lisp\"><pre>1 2 3</pre></code>")))
 
-(test links
+(test link
   (let ((uri "http://example.com/"))
     (is-true
      (emit-equal (doc
@@ -119,7 +119,7 @@
                    (:text "test")))
                  (format nil "<a href=\"~A\">test</a>" uri)))))
 
-(test lists
+(test list
   (is-true
    (emit-equal (doc
                 <unordered-list>
@@ -153,6 +153,36 @@
                           (:term (mk-text "c")
                            :definition (mk-text "3"))))))
                "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>")))
+
+(test image
+  (let* ((src "fig.jpg")
+         (desc "desc")
+         (document
+          (doc
+           <image>
+           (:source src
+            :description desc))))
+    (is-true
+     (emit-equal document
+                 (format nil "<img src=~S alt=~S title=~S />" src desc desc)))))
+
+(test figure
+  (let* ((src "fig.jpg")
+         (desc "desc")
+         (figdesc "description")
+         (document
+          (doc
+           <figure>
+           (:image (doc
+                    <image>
+                    (:source src
+                     :description desc))
+            :description (mk-text figdesc)))))
+    (is-true
+     (emit-equal document
+                 (format nil
+                         "<figure><img src=~S alt=~S title=~S /><figcaption>~A</figcaption></figure>"
+                         src desc desc figdesc)))))
 
 (test section
   (let ((document
