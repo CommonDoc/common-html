@@ -11,6 +11,9 @@
 (defun mk-text (string)
   (doc <text-node> (:text string)))
 
+(defun mk-text-item (string)
+  (doc <list-item> () (<text-node> (:text string))))
+
 ;;; Tests
 
 (def-suite tests
@@ -115,6 +118,24 @@
                   (<text-node>
                    (:text "test")))
                  (format nil "<a href=\"~A\">test</a>" uri)))))
+
+(test lists
+  (is-true
+   (emit-equal (doc
+                <unordered-list>
+                (:items (list
+                         (mk-text-item "1")
+                         (mk-text-item "2")
+                         (mk-text-item "3"))))
+               "<ul><li>1</li><li>2</li><li>3</li></ul>"))
+  (is-true
+   (emit-equal (doc
+                <ordered-list>
+                (:items (list
+                         (mk-text-item "1")
+                         (mk-text-item "2")
+                         (mk-text-item "3"))))
+               "<ol><li>1</li><li>2</li><li>3</li></ol>")))
 
 (test section
   (let ((document
