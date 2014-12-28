@@ -70,8 +70,8 @@ contexts."
 
 (define-child-emitter <list-item> :li)
 (define-emitter <definition>
-  (html (:dt (emit (term node)))
-        (:dd (emit (definition node)))))
+  (html (:dt (node-to-html-string (term node)))
+        (:dd (node-to-html-string (definition node)))))
 (define-emitter <unordered-list>
   (html (:ul (emit (items node)))))
 (define-emitter <ordered-list>
