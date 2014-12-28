@@ -72,9 +72,12 @@ contexts."
 (define-emitter <definition>
   (html (:dt (emit (term node)))
         (:dd (emit (definition node)))))
-(define-child-emitter <unordered-list> :ul)
-(define-child-emitter <ordered-list> :ol)
-(define-child-emitter <definition-list> :dl)
+(define-emitter <unordered-list>
+  (html (:ul (emit (items node)))))
+(define-emitter <ordered-list>
+  (html (:ol (emit (items node)))))
+(define-emitter <definition-list>
+  (html (:dl (emit (items node)))))
 
 (define-emitter <image>
     (html (:img :src (source node)
