@@ -135,7 +135,24 @@
                          (mk-text-item "1")
                          (mk-text-item "2")
                          (mk-text-item "3"))))
-               "<ol><li>1</li><li>2</li><li>3</li></ol>")))
+               "<ol><li>1</li><li>2</li><li>3</li></ol>"))
+  (is-true
+   (emit-equal (doc
+                <definition-list>
+                (:items (list
+                         (doc
+                          <definition>
+                          (:term (mk-text "a")
+                           :definition (mk-text "1")))
+                         (doc
+                          <definition>
+                          (:term (mk-text "b")
+                           :definition (mk-text "2")))
+                         (doc
+                          <definition>
+                          (:term (mk-text "c")
+                           :definition (mk-text "3"))))))
+               "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>")))
 
 (test section
   (let ((document
