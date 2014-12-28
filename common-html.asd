@@ -4,7 +4,8 @@
   :license "MIT"
   :version "0.1"
   :depends-on (:common-doc
-               :cl-markup)
+               :cl-markup
+               :plump)
   :components ((:module "src"
                 :serial t
                 :components
