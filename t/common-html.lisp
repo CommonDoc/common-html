@@ -184,6 +184,26 @@
                          "<figure><img src=~S alt=~S title=~S /><figcaption>~A</figcaption></figure>"
                          src desc desc figdesc)))))
 
+(test table
+  (let* ((matrix
+           '((1 2 3)
+             (4 5 6)
+             (7 8 9)))
+         (document
+          (doc
+           <table>
+           (:rows
+            (loop for row in matrix collecting
+             (doc
+              <row>
+              (:cells
+               (loop for n in row collecting
+                (doc <cell> () (<text-node> (:text (write-to-string n))))))))))))
+    (is-true
+     (emit-equal document
+                 (format nil "<table>~{<tr>~{<td>~A</td>~}</tr>~}</table>"
+                         matrix)))))
+
 (test section
   (let ((document
           (doc
