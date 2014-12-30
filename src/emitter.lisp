@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage common-html.emitter
   (:use :cl :common-doc)
-  (:export :node-to-html-string)
+  (:export :node-to-stream
+           :node-to-html-string)
   (:documentation "Emit HTML5 from a CommonDoc document."))
 (in-package :common-html.emitter)
 
@@ -129,6 +130,12 @@ contexts."
        (:body
         (emit (children node))))
       nil))
+
+(defun node-to-stream (node stream)
+  "Emit a node into a stream."
+  (let ((markup:*output-stream* stream)
+        (*section-depth* 1))
+    (emit node)))
 
 (defun node-to-html-string (node)
   "Return an HTML string from a node."
