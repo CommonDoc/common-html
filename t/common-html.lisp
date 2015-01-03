@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage common-html-test
-  (:use :cl :fiveam :common-doc))
+  (:use :cl :fiveam :common-doc)
+  (:import-from :common-doc.util
+                :doc))
 (in-package :common-html-test)
 
 ;;; Utils
@@ -95,20 +97,6 @@
                    (:text "test")))))
                "<b><i><u>test</u></i></b>")))
 
-(test code
-  (is-true
-   (emit-equal (doc
-                <verbatim>
-                (:text "1 2 3"))
-               "<pre>1 2 3</pre>"))
-  (is-true
-   (emit-equal (doc
-                <code-block>
-                (:language "lisp")
-                (<verbatim>
-                 (:text "1 2 3")))
-               "<code language=\"lisp\"><pre>1 2 3</pre></code>")))
-
 (test link
   (let ((uri "http://example.com/"))
     (is-true
@@ -123,35 +111,35 @@
   (is-true
    (emit-equal (doc
                 <unordered-list>
-                (:items (list
-                         (mk-text-item "1")
-                         (mk-text-item "2")
-                         (mk-text-item "3"))))
+                (:children (list
+                            (mk-text-item "1")
+                            (mk-text-item "2")
+                            (mk-text-item "3"))))
                "<ul><li>1</li><li>2</li><li>3</li></ul>"))
   (is-true
    (emit-equal (doc
                 <ordered-list>
-                (:items (list
-                         (mk-text-item "1")
-                         (mk-text-item "2")
-                         (mk-text-item "3"))))
+                (:children (list
+                            (mk-text-item "1")
+                            (mk-text-item "2")
+                            (mk-text-item "3"))))
                "<ol><li>1</li><li>2</li><li>3</li></ol>"))
   (is-true
    (emit-equal (doc
                 <definition-list>
-                (:items (list
-                         (doc
-                          <definition>
-                          (:term (mk-text "a")
-                           :definition (mk-text "1")))
-                         (doc
-                          <definition>
-                          (:term (mk-text "b")
-                           :definition (mk-text "2")))
-                         (doc
-                          <definition>
-                          (:term (mk-text "c")
-                           :definition (mk-text "3"))))))
+                (:children (list
+                            (doc
+                             <definition>
+                             (:term (mk-text "a")
+                              :definition (mk-text "1")))
+                            (doc
+                             <definition>
+                             (:term (mk-text "b")
+                              :definition (mk-text "2")))
+                            (doc
+                             <definition>
+                             (:term (mk-text "c")
+                              :definition (mk-text "3"))))))
                "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>")))
 
 (test image

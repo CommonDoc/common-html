@@ -59,33 +59,28 @@ contexts."
 (define-child-emitter <code-block>
   :code :language (language node))
 
-(define-emitter <verbatim>
-    (html (:pre (text node))))
-
 (define-child-emitter <inline-quote> :q)
 (define-child-emitter <block-quote> :blockquote)
 
-(define-child-emitter <internal-link>
-  :a :href (format nil "#~A" (section-reference node)))
-
-(define-child-emitter <internal-link>
-  :a :href (format nil "~A/#~A"
-                   (document-reference node)
-                   (section-reference node)))
+(define-child-emitter <document-link>
+  :a :href (let ((sec-ref (section-reference node))
+                 (doc-ref (document-reference node)))
+             (if doc-ref
+                 (format nil "~A.html/#~A" doc-ref sec-ref)
+                 (format nil "#~A" sec-ref))))
 
 (define-child-emitter <web-link>
   :a :href (quri:render-uri (uri node)))
 
 (define-child-emitter <list-item> :li)
+
 (define-emitter <definition>
   (html (:dt (emit (term node)))
         (:dd (emit (definition node)))))
-(define-emitter <unordered-list>
-  (html (:ul (emit (items node)))))
-(define-emitter <ordered-list>
-  (html (:ol (emit (items node)))))
-(define-emitter <definition-list>
-  (html (:dl (emit (items node)))))
+
+(define-child-emitter <unordered-list> :ul)
+(define-child-emitter <ordered-list> :ol)
+(define-child-emitter <definition-list> :dl)
 
 (define-emitter <image>
     (html (:img :src (source node)
