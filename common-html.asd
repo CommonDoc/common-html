@@ -2,6 +2,7 @@
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :maintainer "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
+  :homepage "https://github.com/CommonDoc/common-html"
   :version "0.1"
   :depends-on (:common-doc
                :cl-markup
