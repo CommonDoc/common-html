@@ -11,10 +11,10 @@
   (equal (common-html.emitter:node-to-html-string node) string))
 
 (defun mk-text (string)
-  (doc <text-node> (:text string)))
+  (doc text-node (:text string)))
 
 (defun mk-text-item (string)
-  (doc <list-item> () (<text-node> (:text string))))
+  (doc list-item () (text-node (:text string))))
 
 ;;; Tests
 
@@ -29,71 +29,71 @@
 (test paragraph
   (is-true
    (emit-equal (doc
-                <paragraph>
+                paragraph
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<p>test</p>")))
 
 (test markup
   (is-true
    (emit-equal (doc
-                <bold>
+                bold
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<b>test</b>"))
   (is-true
    (emit-equal (doc
-                <italic>
+                italic
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<i>test</i>"))
   (is-true
    (emit-equal (doc
-                <underline>
+                underline
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<u>test</u>"))
   (is-true
    (emit-equal (doc
-                <strikethrough>
+                strikethrough
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<strike>test</strike>"))
   (is-true
    (emit-equal (doc
-                <code>
+                code
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<code>test</code>"))
   (is-true
    (emit-equal (doc
-                <superscript>
+                superscript
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<sup>test</sup>"))
   (is-true
    (emit-equal (doc
-                <subscript>
+                subscript
                 ()
-                (<text-node>
+                (text-node
                  (:text "test")))
                "<sub>test</sub>"))
   (is-true
    (emit-equal (doc
-                <bold>
+                bold
                 ()
-                (<italic>
+                (italic
                  ()
-                 (<underline>
+                 (underline
                   ()
-                  (<text-node>
+                  (text-node
                    (:text "test")))))
                "<b><i><u>test</u></i></b>")))
 
@@ -101,16 +101,16 @@
   (let ((uri "http://example.com/"))
     (is-true
      (emit-equal (doc
-                  <web-link>
+                  web-link
                   (:uri (quri:uri uri))
-                  (<text-node>
+                  (text-node
                    (:text "test")))
                  (format nil "<a href=\"~A\">test</a>" uri)))))
 
 (test list
   (is-true
    (emit-equal (doc
-                <unordered-list>
+                unordered-list
                 (:children (list
                             (mk-text-item "1")
                             (mk-text-item "2")
@@ -118,7 +118,7 @@
                "<ul><li>1</li><li>2</li><li>3</li></ul>"))
   (is-true
    (emit-equal (doc
-                <ordered-list>
+                ordered-list
                 (:children (list
                             (mk-text-item "1")
                             (mk-text-item "2")
@@ -126,18 +126,18 @@
                "<ol><li>1</li><li>2</li><li>3</li></ol>"))
   (is-true
    (emit-equal (doc
-                <definition-list>
+                definition-list
                 (:children (list
                             (doc
-                             <definition>
+                             definition
                              (:term (mk-text "a")
                               :definition (mk-text "1")))
                             (doc
-                             <definition>
+                             definition
                              (:term (mk-text "b")
                               :definition (mk-text "2")))
                             (doc
-                             <definition>
+                             definition
                              (:term (mk-text "c")
                               :definition (mk-text "3"))))))
                "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>")))
@@ -147,7 +147,7 @@
          (desc "desc")
          (document
           (doc
-           <image>
+           image
            (:source src
             :description desc))))
     (is-true
@@ -160,9 +160,9 @@
          (figdesc "description")
          (document
           (doc
-           <figure>
+           figure
            (:image (doc
-                    <image>
+                    image
                     (:source src
                      :description desc))
             :description (mk-text figdesc)))))
@@ -179,14 +179,14 @@
              (7 8 9)))
          (document
           (doc
-           <table>
+           table
            (:rows
             (loop for row in matrix collecting
              (doc
-              <row>
+              row
               (:cells
                (loop for n in row collecting
-                (doc <cell> () (<text-node> (:text (write-to-string n))))))))))))
+                (doc cell () (text-node (:text (write-to-string n))))))))))))
     (is-true
      (emit-equal document
                  (format nil "<table>~{<tr>~{<td>~A</td>~}</tr>~}</table>"
@@ -195,13 +195,13 @@
 (test section
   (let ((document
           (doc
-           <section>
+           section
            (:title (mk-text "Sec 1"))
-           (<section>
+           (section
             (:title (mk-text "Sec 1.1"))
-            (<section>
+            (section
              (:title (mk-text "Sec 1.1.1"))))
-           (<section>
+           (section
             (:title (mk-text "Sec 1.2"))))))
     (is-true
      (emit-equal document
@@ -214,9 +214,9 @@
 (test document
   (let ((document
           (doc
-           <document>
+           document
            (:title "My Title")
-           (<text-node>
+           (text-node
             (:text "test")))))
     (is-true
      (emit-equal document

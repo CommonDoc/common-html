@@ -16,7 +16,7 @@ contexts."
      nil))
 
 (defvar *section-depth*
-  "The depth of `<section>` classes. Used to produce header numbers, e.g. `h1, `h3`.")
+  "The depth of `section` classes. Used to produce header numbers, e.g. `h1, `h3`.")
 
 ;;; Emit methods
 
@@ -37,70 +37,70 @@ contexts."
   `(define-emitter ,class
        (html (,@tag (emit (children node))))))
 
-(define-emitter <content-node>
+(define-emitter content-node
   "The generic emitter for content nodes."
   (loop for child in (children node) do
     (emit child)))
 
-(define-emitter <text-node>
+(define-emitter text-node
     (progn
       (write-string (text node) markup:*output-stream*)
       nil))
 
-(define-child-emitter <paragraph> :p)
-(define-child-emitter <bold> :b)
-(define-child-emitter <italic> :i)
-(define-child-emitter <underline> :u)
-(define-child-emitter <strikethrough> :strike)
-(define-child-emitter <code> :code)
-(define-child-emitter <superscript> :sup)
-(define-child-emitter <subscript> :sub)
+(define-child-emitter paragraph :p)
+(define-child-emitter bold :b)
+(define-child-emitter italic :i)
+(define-child-emitter underline :u)
+(define-child-emitter strikethrough :strike)
+(define-child-emitter code :code)
+(define-child-emitter superscript :sup)
+(define-child-emitter subscript :sub)
 
-(define-child-emitter <code-block>
+(define-child-emitter code-block
   :code :language (language node))
 
-(define-child-emitter <inline-quote> :q)
-(define-child-emitter <block-quote> :blockquote)
+(define-child-emitter inline-quote :q)
+(define-child-emitter block-quote :blockquote)
 
-(define-child-emitter <document-link>
+(define-child-emitter document-link
   :a :href (let ((sec-ref (section-reference node))
                  (doc-ref (document-reference node)))
              (if doc-ref
                  (format nil "~A.html/#~A" doc-ref sec-ref)
                  (format nil "#~A" sec-ref))))
 
-(define-child-emitter <web-link>
+(define-child-emitter web-link
   :a :href (quri:render-uri (uri node)))
 
-(define-child-emitter <list-item> :li)
+(define-child-emitter list-item :li)
 
-(define-emitter <definition>
+(define-emitter definition
   (html (:dt (emit (term node)))
         (:dd (emit (definition node)))))
 
-(define-child-emitter <unordered-list> :ul)
-(define-child-emitter <ordered-list> :ol)
-(define-child-emitter <definition-list> :dl)
+(define-child-emitter unordered-list :ul)
+(define-child-emitter ordered-list :ol)
+(define-child-emitter definition-list :dl)
 
-(define-emitter <image>
+(define-emitter image
     (html (:img :src (source node)
                 :alt (description node)
                 :title (description node))))
 
-(define-emitter <figure>
+(define-emitter figure
   (html (:figure
          (emit (image node))
          (:figcaption (emit (description node))))))
 
-(define-emitter <table>
+(define-emitter table
     (html (:table (emit (rows node)))))
 
-(define-emitter <row>
+(define-emitter row
     (html (:tr (emit (cells node)))))
 
-(define-child-emitter <cell> :td)
+(define-child-emitter cell :td)
 
-(define-emitter <section>
+(define-emitter section
   (macrolet ((section-emitter (tag)
                `(progn
                   (html (,tag (emit (title node))))
@@ -117,7 +117,7 @@ contexts."
       (6 (section-emitter :h6))
       (t (section-emitter :h6)))))
 
-(define-emitter <document>
+(define-emitter document
     (progn
       (markup:html5
        (:head
