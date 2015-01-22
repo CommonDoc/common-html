@@ -5,12 +5,12 @@
   :homepage "https://github.com/CommonDoc/common-html"
   :version "0.1"
   :depends-on (:common-doc
-               :cl-markup
                :plump)
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "emitter")
+                ((:file "template")
+                 (:file "emitter")
                  (:file "common-html"))))
   :description "An HTML parser/emitter for CommonDoc."
   :long-description
