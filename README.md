@@ -9,13 +9,13 @@ An HTML parser/emitter for [CommonDoc](https://github.com/CommonDoc/common-doc).
 ```lisp
 (defvar node
   (doc
-   (<document>
+   (document
     (:title "My Document"
      :creator "me"
      :keywords (list "test" "test1"))
-    (<paragraph>
+    (paragraph
      ()
-     (<text-node>
+     (text-node
       (:text "test"))))))
 
 (common-html.emitter:node-to-html-string node) ;; => "<p>test</p>"
