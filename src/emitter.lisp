@@ -170,13 +170,11 @@
 
 (defun node-to-stream (node stream)
   "Emit a node into a stream."
-  (let ((markup:*output-stream* stream)
+  (let ((*output-stream* stream)
         (*section-depth* 1))
     (emit node)))
 
 (defun node-to-html-string (node)
   "Return an HTML string from a node."
   (with-output-to-string (stream)
-    (let ((*output-stream* stream)
-          (*section-depth* 1))
-      (emit node))))
+    (node-to-stream node stream)))

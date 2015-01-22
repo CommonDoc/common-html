@@ -5,7 +5,6 @@
   :homepage "https://github.com/CommonDoc/common-html"
   :version "0.1"
   :depends-on (:common-doc
-               :cl-markup
                :plump)
   :components ((:module "src"
                 :serial t
