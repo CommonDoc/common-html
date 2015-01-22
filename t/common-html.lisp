@@ -139,7 +139,7 @@
            (:source src
             :description desc))))
     (emit-equal document
-                (format nil "<img src=~S alt=~S title=~S />" src desc desc))))
+                (format nil "<img src=~S alt=~S title=~S/>" src desc desc))))
 
 (test figure
   (let* ((src "fig.jpg")
@@ -155,7 +155,7 @@
             :description (mk-text figdesc)))))
     (emit-equal document
                 (format nil
-                        "<figure><img src=~S alt=~S title=~S /><figcaption>~A</figcaption></figure>"
+                        "<figure><img src=~S alt=~S title=~S/><figcaption>~A</figcaption></figure>"
                         src desc desc figdesc))))
 
 (test table
@@ -203,6 +203,6 @@
            (text-node
             (:text "test")))))
     (emit-equal document
-                "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
+                "<html><head><title>My Title</title></head><body>test</body></html>")))
 
 (run! 'tests)
