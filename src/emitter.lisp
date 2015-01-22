@@ -160,14 +160,6 @@
       (6 (section-emitter "h6"))
       (t (section-emitter "h6")))))
 
-(define-emitter (doc document)
-  (with-tag ("html" nil)
-    (with-tag ("head" nil)
-      (with-tag ("title" nil)
-        (write-string (title doc) *output-stream*)))
-    (with-tag ("body" nil)
-      (emit (children doc)))))
-
 (defun node-to-stream (node stream)
   "Emit a node into a stream."
   (let ((*output-stream* stream)
@@ -178,3 +170,8 @@
   "Return an HTML string from a node."
   (with-output-to-string (stream)
     (node-to-stream node stream)))
+
+(define-emitter (doc document)
+  (let ((children-string (node-to-html-string (children doc))))
+    (write-string (common-html.template:template doc children-string)
+                  *output-stream*)))
