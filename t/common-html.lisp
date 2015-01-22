@@ -203,6 +203,6 @@
            (text-node
             (:text "test")))))
     (emit-equal document
-                "<html><head><title>My Title</title></head><body>test</body></html>")))
+                "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
 
 (run! 'tests)
