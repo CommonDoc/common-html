@@ -28,7 +28,8 @@
 (defmacro with-tag ((tag-name node &optional attributes) &rest body)
   `(let ((tag-name ,tag-name))
      (format *output-stream* "<~A" tag-name)
-     (emit-metadata (metadata ,node))
+     (when ,node
+       (emit-metadata (metadata ,node)))
      (loop for attribute in ,attributes do
        (print-attribute (first attribute) (rest attribute)))
      (write-string ">" *output-stream*)
@@ -46,7 +47,7 @@
 
 (defmacro define-emitter ((node class) &rest body)
   "Define an emitter method."
-  `(defmethod emit ((node ,class))
+  `(defmethod emit ((,node ,class))
      ,@body))
 
 (defmacro define-simple-emitter (class tag-name)
@@ -61,10 +62,10 @@
     (emit child)))
 
 (define-emitter (node text-node)
-    (if (metadata node)
-        (with-tag ("span" node)
-          (write-string (text node) *output-stream*))
-        (write-string (text node) *output-stream*)))
+  (if (metadata node)
+      (with-tag ("span" node)
+                (write-string (text node) *output-stream*))
+      (write-string (text node) *output-stream*)))
 
 (define-simple-emitter paragraph "p")
 (define-simple-emitter bold "b")
@@ -83,7 +84,7 @@
 (define-simple-emitter inline-quote "q")
 (define-simple-emitter block-quote "blockquote")
 
-(define-child-emitter (ref document-link)
+(define-emitter (ref document-link)
   (let* ((sec-ref (section-reference ref))
          (doc-ref (document-reference ref))
          (url (if doc-ref
@@ -93,16 +94,18 @@
                    (list (cons "href" url)))
       (emit (children ref)))))
 
-(define-child-emitter (link web-link)
+(define-emitter (link web-link)
   (with-tag ("a" link (list (cons "href"
-                                  (quri:render-uri (uri node)))))
+                                  (quri:render-uri (uri link)))))
     (emit (children link))))
 
 (define-simple-emitter list-item "li")
 
-(define-emitter definition
-  (html (:dt (emit (term node)))
-        (:dd (emit (definition node)))))
+(define-emitter (definition definition)
+  (with-tag ("dt" (term definition))
+    (emit (term definition)))
+  (with-tag ("dd" (definition definition))
+    (emit (definition definition))))
 
 (define-simple-emitter unordered-list "ul")
 (define-simple-emitter ordered-list "ol")
@@ -110,14 +113,15 @@
 
 (define-emitter (image image)
   (with-tag ("img" image
-                   (list (cons "src" (source node))
-                         (cons "alt" (description node))
-                         (cons "title" (description node))))))
+                   (list (cons "src" (source image))
+                         (cons "alt" (description image))
+                         (cons "title" (description image))))))
 
-(define-emitter figure
-  (html (:figure
-         (emit (image node))
-         (:figcaption (emit (description node))))))
+(define-emitter (fig figure)
+  (with-tag ("figure" fig)
+    (emit (image fig))
+    (with-tag ("figcaption" nil)
+      (emit (description fig)))))
 
 (define-emitter (table table)
     (with-tag ("table" table)
@@ -135,7 +139,7 @@
                   (with-tag (,tag section)
                     (emit (title section)))
                   (incf *section-depth*)
-                  (if (slot-boundp node 'children)
+                  (if (slot-boundp section 'children)
                       (emit (children section)))
                   (decf *section-depth*))))
     (case *section-depth*
@@ -148,13 +152,11 @@
       (t (section-emitter "h6")))))
 
 (define-emitter (doc document)
-  (progn
-      (markup:html5
-       (:head
-        (:title (title doc)))
-       (:body
-        (emit (children doc))))
-      nil))
+  (with-tag ("html" nil)
+    (with-tag ("head" nil)
+      (emit (title doc)))
+    (with-tag ("body" nil)
+      (emit (children doc)))))
 
 (defun node-to-stream (node stream)
   "Emit a node into a stream."
