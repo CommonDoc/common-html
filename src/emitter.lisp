@@ -20,21 +20,26 @@
   (format *output-stream* " ~A=~S" key value))
 
 (defun emit-metadata (hash-table)
-  (loop for key being the hash-keys of hash-table
-        for value being the hash-values of hash-table
-        do
-           (print-attribute key value)))
+  (when hash-table
+    (loop for key being the hash-keys of hash-table
+          for value being the hash-values of hash-table
+          do
+             (print-attribute key value))))
 
-(defmacro with-tag ((tag-name node &optional attributes) &rest body)
+(defmacro with-tag ((tag-name node &key attributes self-closing-p)
+                    &rest body)
   `(let ((tag-name ,tag-name))
      (format *output-stream* "<~A" tag-name)
      (when ,node
        (emit-metadata (metadata ,node)))
      (loop for attribute in ,attributes do
        (print-attribute (first attribute) (rest attribute)))
-     (write-string ">" *output-stream*)
-     ,@body
-     (format *output-stream* "</~A>" tag-name)))
+     (if ,self-closing-p
+         (write-string "/>" *output-stream*)
+         (progn
+           (write-string ">" *output-stream*)
+           ,@body
+           (format *output-stream* "</~A>" tag-name)))))
 
 ;;; Emit methods
 
@@ -77,7 +82,8 @@
 (define-simple-emitter subscript "sub")
 
 (define-emitter (code code-block)
-  (with-tag ("code" code (list (cons "language"
+  (with-tag ("code" code
+             :attributes (list (cons "language"
                                      (language code))))
     (emit (children code))))
 
@@ -91,12 +97,14 @@
                   (format nil "~A.html/#~A" doc-ref sec-ref)
                   (format nil "#~A" sec-ref))))
     (with-tag ("a" ref
-                   (list (cons "href" url)))
+               :attributes (list (cons "href" url)))
       (emit (children ref)))))
 
 (define-emitter (link web-link)
-  (with-tag ("a" link (list (cons "href"
-                                  (quri:render-uri (uri link)))))
+  (with-tag ("a" link
+                 :attributes (list
+                              (cons "href"
+                                    (quri:render-uri (uri link)))))
     (emit (children link))))
 
 (define-simple-emitter list-item "li")
@@ -113,9 +121,10 @@
 
 (define-emitter (image image)
   (with-tag ("img" image
-                   (list (cons "src" (source image))
-                         (cons "alt" (description image))
-                         (cons "title" (description image))))))
+                   :attributes (list (cons "src" (source image))
+                                     (cons "alt" (description image))
+                                     (cons "title" (description image)))
+                   :self-closing-p t)))
 
 (define-emitter (fig figure)
   (with-tag ("figure" fig)
@@ -154,7 +163,8 @@
 (define-emitter (doc document)
   (with-tag ("html" nil)
     (with-tag ("head" nil)
-      (emit (title doc)))
+      (with-tag ("title" nil)
+        (write-string (title doc) *output-stream*)))
     (with-tag ("body" nil)
       (emit (children doc)))))
 
