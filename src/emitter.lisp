@@ -63,8 +63,12 @@
 
 (define-emitter (node content-node)
   "The generic emitter for content nodes."
-  (loop for child in (children node) do
-    (emit child)))
+  (if (metadata node)
+      (with-tag ("div" node)
+        (loop for child in (children node) do
+          (emit child)))
+      (loop for child in (children node) do
+        (emit child))))
 
 (define-emitter (node text-node)
   (if (metadata node)
