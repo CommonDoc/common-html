@@ -2,8 +2,10 @@
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :maintainer "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
-  :homepage "https://github.com/CommonDoc/common-html"
   :version "0.1"
+  :homepage "https://github.com/CommonDoc/common-html"
+  :bug-tracker "https://github.com/CommonDoc/common-html/issues"
+  :source-control (:git "git@github.com:CommonDoc/common-html.git")
   :depends-on (:common-doc
                :plump)
   :components ((:module "src"
