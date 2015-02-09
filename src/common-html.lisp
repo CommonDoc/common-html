@@ -12,9 +12,11 @@
 (defmethod common-doc.format:emit-document ((html html)
                                             (doc common-doc:document)
                                             stream)
+  "Render a document to HTML stream."
   (common-html.emitter:node-to-stream doc stream))
 
 (defmethod common-doc.format:emit-document ((html html)
                                             (node common-doc:document-node)
                                             stream)
+  "Render a node to HTML stream."
   (common-html.emitter:node-to-stream node stream))

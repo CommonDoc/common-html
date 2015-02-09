@@ -17,9 +17,11 @@
 ;;; Utilities
 
 (defun print-attribute (key value)
+  "Print a key value pair as HTML."
   (format *output-stream* " ~A=~S" key value))
 
 (defun emit-metadata (hash-table)
+  "Print a hash table as HTML attributes."
   (when hash-table
     (loop for key being the hash-keys of hash-table
           for value being the hash-values of hash-table
@@ -28,6 +30,7 @@
 
 (defmacro with-tag ((tag-name node &key attributes self-closing-p)
                     &rest body)
+  "Execute body after opening and before closing a tag."
   `(let ((tag-name ,tag-name))
      (format *output-stream* "<~A" tag-name)
      (when ,node
@@ -71,6 +74,7 @@
         (emit child))))
 
 (define-emitter (node text-node)
+  "Emit a text node."
   (if (metadata node)
       (with-tag ("span" node)
                 (write-string (text node) *output-stream*))
@@ -86,6 +90,7 @@
 (define-simple-emitter subscript "sub")
 
 (define-emitter (code code-block)
+  "Emit a code block."
   (with-tag ("code" code
              :attributes (list (cons "language"
                                      (language code))))
@@ -95,6 +100,7 @@
 (define-simple-emitter block-quote "blockquote")
 
 (define-emitter (ref document-link)
+  "Emit a document link."
   (let* ((sec-ref (section-reference ref))
          (doc-ref (document-reference ref))
          (url (if doc-ref
@@ -105,6 +111,7 @@
       (emit (children ref)))))
 
 (define-emitter (link web-link)
+  "Emit a web link."
   (with-tag ("a" link
                  :attributes (list
                               (cons "href"
@@ -114,6 +121,7 @@
 (define-simple-emitter list-item "li")
 
 (define-emitter (definition definition)
+  "Emit a definition list item."
   (with-tag ("dt" (term definition))
     (emit (term definition)))
   (with-tag ("dd" (definition definition))
@@ -124,6 +132,7 @@
 (define-simple-emitter definition-list "dl")
 
 (define-emitter (image image)
+  "Emit an image."
   (with-tag ("img" image
                    :attributes (list (cons "src" (source image))
                                      (cons "alt" (description image))
@@ -131,22 +140,26 @@
                    :self-closing-p t)))
 
 (define-emitter (fig figure)
+  "Emit a figure."
   (with-tag ("figure" fig)
     (emit (image fig))
     (with-tag ("figcaption" nil)
       (emit (description fig)))))
 
 (define-emitter (table table)
-    (with-tag ("table" table)
-      (emit (rows table))))
+  "Emit a table."
+  (with-tag ("table" table)
+    (emit (rows table))))
 
 (define-emitter (row row)
-    (with-tag ("tr" row)
-      (emit (cells row))))
+  "Emit a row."
+  (with-tag ("tr" row)
+    (emit (cells row))))
 
 (define-simple-emitter cell "td")
 
 (define-emitter (section section)
+  "Emit a section."
   (macrolet ((section-emitter (tag)
                `(progn
                   (with-tag (,tag section)
@@ -176,6 +189,7 @@
     (node-to-stream node stream)))
 
 (define-emitter (doc document)
+  "Emit a full document."
   (let ((children-string (node-to-html-string (children doc))))
     (write-string (common-html.template:template doc children-string)
                   *output-stream*)))

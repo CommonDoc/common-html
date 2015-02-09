@@ -11,6 +11,7 @@
 (in-package :common-html.template)
 
 (defun simplest-template (document children-string)
+  "The simplest template function."
   (format nil "<!DOCTYPE html><html><head><title>~A</title></head><body>~A</body></html>"
           (title document)
           children-string))
