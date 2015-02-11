@@ -13,6 +13,7 @@
                 :components
                 ((:file "template")
                  (:file "emitter")
+                 (:file "multi-emit")
                  (:file "common-html"))))
   :description "An HTML parser/emitter for CommonDoc."
   :long-description
