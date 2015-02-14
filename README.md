@@ -28,8 +28,6 @@ Texinfo/Sphinx style emission, where a document is broken up into sections, and
 each section (Up to a certain depth, or any depth) is emitted as a different
 file.
 
-Non-section nodes between sections are omitted.
-
 ## How it Works
 
 Multi-part file emission can be complicated.

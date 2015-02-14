@@ -31,18 +31,22 @@ second, etc.) to a unique section ID."
           (add-section-id node)))
       table)))
 
-(defmethod multi-emit ((doc document) directory)
+(defmethod multi-emit ((doc document) directory &key max-depth)
   (let ((table (extract-section-id-table doc))
         (section-pos 0))
     (labels ((process-section (section depth)
                (let ((ordinary-nodes (list))
-                     (sub-sections (list)))
+                     (sub-sections (list))
+                     (section-slug (gethash section-pos table)))
                  (loop for child in (children section) do
                    (if (typep child 'section)
-                       (push child sub-sections)
+                       (if (and max-depth (>= depth (1- max-depth)))
+                           (progn
+                             (incf section-pos)
+                             (push child ordinary-nodes))
+                           (push child sub-sections))
                        (push child ordinary-nodes)))
-                 (let* ((section-slug (gethash section-pos table))
-                        (output-filename (make-pathname :name section-slug
+                 (let* ((output-filename (make-pathname :name section-slug
                                                         :type "html"
                                                         :defaults directory))
                         (section-content (make-instance 'content-node

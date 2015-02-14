@@ -215,22 +215,27 @@
              (:text "text"))
             (section
              (:title (mk-text "History"))
+             (text-node
+              (:text "history"))
              (section
               (:title (mk-text "Motivation"))
               (text-node
-                (:text "sample &")))))
-            (section
-             (:title (mk-text "Tutorial"))
-             (bold
-              ()
-              (text-node
-                (:text "bold"))))))
+               (:text "sample &")))))
+           (section
+            (:title (mk-text "Tutorial"))
+            (bold
+             ()
+             (text-node
+              (:text "bold"))))))
         (output-directory
           (asdf:system-relative-pathname :common-html-test #p"html/")))
     (finishes
       (ensure-directories-exist output-directory))
     (finishes
-      (common-html.multi-emit:multi-emit doc output-directory))
+     (common-html.multi-emit:multi-emit doc output-directory))
+    (is
+     (equal (length (uiop:directory-files output-directory))
+            4))
     (macrolet ((test-file (filename content)
                  `(let ((file (merge-pathnames ,filename output-directory)))
                     (is-true
@@ -243,14 +248,33 @@
        "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
       (test-file
        "history.html"
-       "<!DOCTYPE html><html><head><title>History</title></head><body></body></html>")
+       "<!DOCTYPE html><html><head><title>History</title></head><body>history</body></html>")
       (test-file
        "motivation.html"
        "<!DOCTYPE html><html><head><title>Motivation</title></head><body>sample &amp;</body></html>")
       (test-file
        "tutorial.html"
-       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>"))
-    (finishes
-      (uiop:delete-directory-tree output-directory :validate t))))
+       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
+      (finishes
+        (uiop:delete-directory-tree output-directory :validate t))
+      ;; Now, we test emission but with a fixed depth
+      (finishes
+        (ensure-directories-exist output-directory))
+      (finishes
+        (common-html.multi-emit:multi-emit doc output-directory :max-depth 2))
+      (is
+       (equal (length (uiop:directory-files output-directory))
+              3))
+      (test-file
+       "overview.html"
+       "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
+      (test-file
+       "history.html"
+       "<!DOCTYPE html><html><head><title>History</title></head><body>history<h1>Motivation</h1>sample &amp;</body></html>")
+      (test-file
+       "tutorial.html"
+       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
+      (finishes
+        (uiop:delete-directory-tree output-directory :validate t)))))
 
 (run! 'tests)
