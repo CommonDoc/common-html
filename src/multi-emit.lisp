@@ -26,11 +26,10 @@ second, etc.) to a unique section ID."
                                         section-slug)
                            section-slug))
                  (incf current-pos))))
-      (common-doc.ops:traverse-document document
-                                        (lambda (node)
-                                          (when (typep node 'section)
-                                            (add-section-id node)))))
-      table))
+      (common-doc.ops:with-document-traversal (document node)
+        (when (typep node 'section)
+          (add-section-id node)))
+      table)))
 
 (defmethod process-section ((section section) (doc document))
   (loop for child in (children section) do
