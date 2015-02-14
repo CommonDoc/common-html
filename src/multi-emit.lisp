@@ -16,7 +16,7 @@ second, etc.) to a unique section ID."
              (add-section-id (section)
                ;; Extract a slug from a section's title, and add it to the
                ;; table, modifying it if it's already there.
-               (let* ((section-text (common-doc.ops:collect-all-text section))
+               (let* ((section-text (common-doc.ops:collect-all-text (title section)))
                       (section-slug (common-doc.util:string-to-slug section-text)))
                  (setf (gethash current-pos table)
                        (if (slug-in-table-p section-slug)
@@ -44,15 +44,16 @@ second, etc.) to a unique section ID."
                  (let* ((section-slug (gethash section-pos table))
                         (output-filename (make-pathname :name section-slug
                                                         :type "html"
-                                                        :directory directory))
+                                                        :defaults directory))
                         (section-content (make-instance 'content-node
                                                         :children (reverse ordinary-nodes))))
                    ;; Here, we emit the section content into the file
                    (let* ((content-string
                             (common-html.emitter:node-to-html-string section-content))
+                          (section-title (common-doc.ops:collect-all-text (title section)))
                           (html
                             (common-html.template:template-section doc
-                                                                   (title section)
+                                                                   section-title
                                                                    (reference section)
                                                                    content-string)))
                      (with-open-file (output-stream output-filename
@@ -63,7 +64,7 @@ second, etc.) to a unique section ID."
                    (incf section-pos)
                    ;; And finally, go through the subsections, processing each
                    ;; at a time
-                   (loop for sub-sec in sub-sections do
+                   (loop for sub-sec in (reverse sub-sections) do
                      (process-section sub-sec (1+ depth)))))))
       (loop for child in (children doc) do
         (if (typep child 'section)

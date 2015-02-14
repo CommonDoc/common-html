@@ -204,5 +204,53 @@
             (:text "test")))))
     (emit-equal document
                 "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
+(test multi-file-emission
+  (let ((doc
+          (doc
+           document
+           (:title "My Document")
+           (section
+            (:title (mk-text "Overview"))
+            (text-node
+             (:text "text"))
+            (section
+             (:title (mk-text "History"))
+             (section
+              (:title (mk-text "Motivation"))
+              (text-node
+                (:text "sample &")))))
+            (section
+             (:title (mk-text "Tutorial"))
+             (bold
+              ()
+              (text-node
+                (:text "bold"))))))
+        (output-directory
+          (asdf:system-relative-pathname :common-html-test #p"html/")))
+    (finishes
+      (ensure-directories-exist output-directory))
+    (finishes
+      (common-html.multi-emit:multi-emit doc output-directory))
+    (macrolet ((test-file (filename content)
+                 `(let ((file (merge-pathnames ,filename output-directory)))
+                    (is-true
+                     (probe-file file))
+                    (is
+                     (equal (uiop:read-file-string file)
+                            ,content)))))
+      (test-file
+       "overview.html"
+       "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
+      (test-file
+       "history.html"
+       "<!DOCTYPE html><html><head><title>History</title></head><body></body></html>")
+      (test-file
+       "motivation.html"
+       "<!DOCTYPE html><html><head><title>Motivation</title></head><body>sample &amp;</body></html>")
+      (test-file
+       "tutorial.html"
+       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>"))
+    (finishes
+      (uiop:delete-directory-tree output-directory :validate t))))
 
 (run! 'tests)
