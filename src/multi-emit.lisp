@@ -31,12 +31,30 @@ second, etc.) to a unique section ID."
           (add-section-id node)))
       table)))
 
-(defmethod process-section ((section section) (doc document))
-  (loop for child in (children section) do
-    (if (typep child 'section)
-        (process-section child doc))))
-
-(defmethod multi-emit ((doc document))
-  (loop for child in (children doc) do
-    (if (typep child 'section)
-        (process-section child doc))))
+(defmethod multi-emit ((doc document) directory)
+  (let ((table (extract-section-id-table doc))
+        (section-pos 0))
+    (labels ((process-section (section depth)
+               (let ((ordinary-nodes (list))
+                     (sub-sections (list)))
+                 (loop for child in (children section) do
+                   (if (typep child 'section)
+                       (push child sub-sections)
+                       (push child ordinary-nodes)))
+                 (let* ((section-slug (gethash section-pos table))
+                        (output-filename (make-pathname :name section-slug
+                                                        :type "html"
+                                                        :directory directory))
+                        (section-content (make-instance 'content-node
+                                                        :children (reverse ordinary-nodes))))
+                   ;; Here, we emit the section content into the file
+                   nil
+                   ;; We increase the section position by one
+                   (incf section-pos)
+                   ;; And finally, go through the subsections, processing each
+                   ;; at a time
+                   (loop for sub-sec in sub-sections do
+                     (process-section sub-sec (1+ depth)))))))
+      (loop for child in (children doc) do
+        (if (typep child 'section)
+            (process-section child 0))))))
