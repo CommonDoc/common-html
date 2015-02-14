@@ -49,11 +49,13 @@ First, some obvious choices, and how CommonHTML chooses:
 
 Now, the actual emission algorithm:
 
-1. We recursively go through the docuement. When we find a section, we compute
-   the name of the file it will be stored in (i.e. slugify the section title).
+1. We traverse the document, creating a hash table that maps the position of a
+   section in the document (0 for first, 1 for second, etc.) to a unique
+   filename string. This is to ensure no two or more sections clash into the
+   same HTML file.
 
-2. We add the filename to a hash table to make sure two different sections don't
-   collide into the same HTML file.
+2. We recursively go through the docuement. When we find a section, we increase
+   the position counter by one, and extract the name of the file from the table.
 
 3. We go through the body, collecting ordinary nodes and sections into two
    separate lists. We make a content node out of the list of sections and render
