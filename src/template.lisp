@@ -48,9 +48,9 @@
 (defvar *template* (make-instance 'template)
   "The template that will be used by template and template-section.")
 
-(defmacro with-template ((template) &rest body)
+(defmacro with-template ((template &rest args) &rest body)
   "Execute `body` with the template set to `template`."
-  `(let ((*template* ,template))
+  `(let ((*template* (make-instance ,template ,@args))
      ,@body))
 
 (defun template (document children-string)
