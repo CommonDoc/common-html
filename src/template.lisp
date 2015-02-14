@@ -50,7 +50,7 @@
 
 (defmacro with-template ((template &rest args) &rest body)
   "Execute `body` with the template set to `template`."
-  `(let ((*template* (make-instance ,template ,@args))
+  `(let ((*template* (make-instance ,template ,@args)))
      ,@body))
 
 (defun template (document children-string)
