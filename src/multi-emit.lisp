@@ -48,7 +48,17 @@ second, etc.) to a unique section ID."
                         (section-content (make-instance 'content-node
                                                         :children (reverse ordinary-nodes))))
                    ;; Here, we emit the section content into the file
-                   nil
+                   (let* ((content-string
+                            (common-html.emitter:node-to-html-string section-content))
+                          (html
+                            (common-html.template:template-section doc
+                                                                   (title section)
+                                                                   (reference section)
+                                                                   content-string)))
+                     (with-open-file (output-stream output-filename
+                                                    :direction :output
+                                                    :if-exists :supersede)
+                       (write-string html output-stream)))
                    ;; We increase the section position by one
                    (incf section-pos)
                    ;; And finally, go through the subsections, processing each

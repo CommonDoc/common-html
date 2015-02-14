@@ -45,7 +45,7 @@
           section-title
           content-string))
 
-(defvar *template* (find-class 'template)
+(defvar *template* (make-instance 'template)
   "The template that will be used by template and template-section.")
 
 (defmacro with-template ((template) &rest body)
