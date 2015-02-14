@@ -152,7 +152,7 @@
                     image
                     (:source src
                      :description desc))
-            :description (mk-text figdesc)))))
+            :description (list (mk-text figdesc))))))
     (emit-equal document
                 (format nil
                         "<figure><img src=~S alt=~S title=~S/><figcaption>~A</figcaption></figure>"
