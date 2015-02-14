@@ -75,10 +75,11 @@
 
 (define-emitter (node text-node)
   "Emit a text node."
-  (if (metadata node)
-      (with-tag ("span" node)
-                (write-string (text node) *output-stream*))
-      (write-string (text node) *output-stream*)))
+  (let ((text (plump:encode-entities (text node))))
+    (if (metadata node)
+        (with-tag ("span" node)
+                  (write-string text) *output-stream*))
+        (write-string text *output-stream*)))
 
 (define-simple-emitter paragraph "p")
 (define-simple-emitter bold "b")
