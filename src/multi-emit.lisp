@@ -69,7 +69,12 @@ second, etc.) to a unique section ID."
                    ;; And finally, go through the subsections, processing each
                    ;; at a time
                    (loop for sub-sec in (reverse sub-sections) do
-                     (process-section sub-sec (1+ depth)))))))
-      (loop for child in (children doc) do
-        (if (typep child 'section)
-            (process-section child 0))))))
+                     (process-section sub-sec (1+ depth))))))
+             (process-toplevel (node)
+               (loop for child in (children node) do
+                 (cond
+                   ((typep child 'section)
+                    (process-section child 0))
+                   ((typep child 'content-node)
+                    (process-toplevel child))))))
+      (process-toplevel doc))))
