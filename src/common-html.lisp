@@ -1,8 +1,3 @@
-(in-package :cl-user)
-(defpackage common-html
-  (:use :cl)
-  (:export :html)
-  (:documentation "Main interface."))
 (in-package :common-html)
 
 (defclass html (common-doc.format:document-format)

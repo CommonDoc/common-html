@@ -11,7 +11,8 @@
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "template")
+                ((:file "package")
+                 (:file "template")
                  (:file "emitter")
                  (:file "multi-emit")
                  (:file "common-html"))))

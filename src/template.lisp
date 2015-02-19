@@ -1,18 +1,3 @@
-(in-package :cl-user)
-(defpackage common-html.template
-  (:use :cl)
-  (:import-from :common-doc
-                :document
-                :title
-                :children)
-  (:export :template
-           :render
-           :render-section
-           :*template*
-           :with-template
-           :template
-           :template-section)
-  (:documentation "Document templates."))
 (in-package :common-html.template)
 
 ;;; Template classes

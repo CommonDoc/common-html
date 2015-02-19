@@ -1,9 +1,3 @@
-(in-package :cl-user)
-(defpackage common-html.emitter
-  (:use :cl :common-doc)
-  (:export :node-to-stream
-           :node-to-html-string)
-  (:documentation "Emit HTML5 from a CommonDoc document."))
 (in-package :common-html.emitter)
 
 ;;; Variables
@@ -11,8 +5,10 @@
 (defvar *output-stream* nil
   "The stream the HTML will be written to.")
 
-(defvar *section-depth*
+(defvar *section-depth* 1
   "The depth of `section` classes. Used to produce header numbers, e.g. `h1, `h3`.")
+
+(defvar *section-pos* 0)
 
 ;;; Utilities
 
@@ -106,7 +102,13 @@
          (doc-ref (document-reference ref))
          (url (if doc-ref
                   (format nil "~A.html/#~A" doc-ref sec-ref)
-                  (format nil "#~A" sec-ref))))
+                  ;; Are we in a multi-file emission context?
+                  (if *section-table*
+                      (let ((file (gethash *section-pos* *section-table*)))
+                        (prog1
+                            (format nil "~A.html" file)
+                          (incf *section-pos*)))
+                      (format nil "#~A" sec-ref)))))
     (with-tag ("a" ref
                :attributes (list (cons "href" url)))
       (emit (children ref)))))
@@ -181,7 +183,8 @@
 (defun node-to-stream (node stream)
   "Emit a node into a stream."
   (let ((*output-stream* stream)
-        (*section-depth* 1))
+        (*section-depth* 1)
+        (*section-pos* 1))
     (emit node)))
 
 (defun node-to-html-string (node)

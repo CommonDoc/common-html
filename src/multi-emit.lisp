@@ -1,7 +1,3 @@
-(in-package :cl-user)
-(defpackage common-html.multi-emit
-  (:use :cl :common-doc)
-  (:export :multi-emit))
 (in-package :common-html.multi-emit)
 
 (defun extract-section-id-table (document)
@@ -31,13 +27,15 @@ second, etc.) to a unique section ID."
           (add-section-id node)))
       table)))
 
+(defvar *section-table* nil)
+
 (defmethod multi-emit ((doc document) directory &key max-depth)
-  (let ((table (extract-section-id-table doc))
+  (let ((*section-table* (extract-section-id-table doc))
         (section-pos 0))
     (labels ((process-section (section depth)
                (let ((ordinary-nodes (list))
                      (sub-sections (list))
-                     (section-slug (gethash section-pos table)))
+                     (section-slug (gethash section-pos *section-table*)))
                  (loop for child in (children section) do
                    (if (typep child 'section)
                        (if (and max-depth (>= depth (1- max-depth)))
