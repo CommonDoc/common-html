@@ -7,8 +7,7 @@
   :bug-tracker "https://github.com/CommonDoc/common-html/issues"
   :source-control (:git "git@github.com:CommonDoc/common-html.git")
   :depends-on (:common-doc
-               :plump
-               :cl-markup)
+               :plump)
   :components ((:module "src"
                 :serial t
                 :components
