@@ -2,7 +2,8 @@
 (defpackage common-html-test
   (:use :cl :fiveam :common-doc)
   (:import-from :common-doc.util
-                :doc))
+   :doc
+                :make-text))
 (in-package :common-html-test)
 
 ;;; Utils
@@ -12,10 +13,7 @@
     (equal (common-html.emitter:node-to-html-string ,node)
            ,string)))
 
-(defun mk-text (string)
-  (doc text-node (:text string)))
-
-(defun mk-text-item (string)
+(defun make-text-item (string)
   (doc list-item () (text-node (:text string))))
 
 ;;; Tests
@@ -25,256 +23,275 @@
 (in-suite tests)
 
 (test text
-  (emit-equal (mk-text "test") "test"))
+      (emit-equal (make-text "test") "test"))
 
 (test paragraph
-  (emit-equal (doc
-               paragraph
-               ()
-               (text-node
-                (:text "test")))
-              "<p>test</p>"))
+      (emit-equal (doc
+                   paragraph
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<p>test</p>"))
 
 (test markup
-  (emit-equal (doc
-               bold
-               ()
-               (text-node
-                (:text "test")))
-              "<b>test</b>")
-  (emit-equal (doc
-               italic
-               ()
-               (text-node
-                (:text "test")))
-              "<i>test</i>")
-  (emit-equal (doc
-               underline
-               ()
-               (text-node
-                (:text "test")))
-              "<u>test</u>")
-  (emit-equal (doc
-               strikethrough
-               ()
-               (text-node
-                (:text "test")))
-              "<strike>test</strike>")
-  (emit-equal (doc
-               code
-               ()
-               (text-node
-                (:text "test")))
-              "<code>test</code>")
-  (emit-equal (doc
-               superscript
-               ()
-               (text-node
-                (:text "test")))
-              "<sup>test</sup>")
-  (emit-equal (doc
-               subscript
-               ()
-               (text-node
-                (:text "test")))
-              "<sub>test</sub>")
-  (emit-equal (doc
-               bold
-               ()
-               (italic
-                ()
-                (underline
-                 ()
-                 (text-node
-                  (:text "test")))))
-              "<b><i><u>test</u></i></b>"))
+      (emit-equal (doc
+                   bold
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<b>test</b>")
+      (emit-equal (doc
+                   italic
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<i>test</i>")
+      (emit-equal (doc
+                   underline
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<u>test</u>")
+      (emit-equal (doc
+                   strikethrough
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<strike>test</strike>")
+      (emit-equal (doc
+                   code
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<code>test</code>")
+      (emit-equal (doc
+                   superscript
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<sup>test</sup>")
+      (emit-equal (doc
+                   subscript
+                   ()
+                   (text-node
+                    (:text "test")))
+                  "<sub>test</sub>")
+      (emit-equal (doc
+                   bold
+                   ()
+                   (italic
+                    ()
+                    (underline
+                     ()
+                     (text-node
+                      (:text "test")))))
+                  "<b><i><u>test</u></i></b>"))
 
 (test link
-  (let ((uri "http://example.com/"))
-    (emit-equal (doc
-                 web-link
-                 (:uri (quri:uri uri))
-                 (text-node
-                  (:text "test")))
-                (format nil "<a href=\"~A\">test</a>" uri))))
+      (let ((uri "http://example.com/"))
+        (emit-equal (doc
+                     web-link
+                     (:uri (quri:uri uri))
+                     (text-node
+                      (:text "test")))
+                    (format nil "<a href=\"~A\">test</a>" uri))))
 
 (test list
-  (emit-equal (doc
-               unordered-list
-               (:children (list
-                           (mk-text-item "1")
-                           (mk-text-item "2")
-                           (mk-text-item "3"))))
-              "<ul><li>1</li><li>2</li><li>3</li></ul>")
-  (emit-equal (doc
-               ordered-list
-               (:children (list
-                           (mk-text-item "1")
-                           (mk-text-item "2")
-                           (mk-text-item "3"))))
-              "<ol><li>1</li><li>2</li><li>3</li></ol>")
-  (emit-equal (doc
-               definition-list
-               (:children (list
-                           (doc
-                            definition
-                            (:term (mk-text "a")
-                             :definition (mk-text "1")))
-                           (doc
-                            definition
-                            (:term (mk-text "b")
-                             :definition (mk-text "2")))
-                           (doc
-                            definition
-                            (:term (mk-text "c")
-                             :definition (mk-text "3"))))))
-              "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>"))
+      (emit-equal (doc
+                   unordered-list
+                   (:children (list
+                               (make-text-item "1")
+                               (make-text-item "2")
+                               (make-text-item "3"))))
+                  "<ul><li>1</li><li>2</li><li>3</li></ul>")
+      (emit-equal (doc
+                   ordered-list
+                   (:children (list
+                               (make-text-item "1")
+                               (make-text-item "2")
+                               (make-text-item "3"))))
+                  "<ol><li>1</li><li>2</li><li>3</li></ol>")
+      (emit-equal (doc
+                   definition-list
+                   (:children (list
+                               (doc
+                                definition
+                                (:term (make-text "a")
+                                 :definition (make-text "1")))
+                               (doc
+                                definition
+                                (:term (make-text "b")
+                                 :definition (make-text "2")))
+                               (doc
+                                definition
+                                (:term (make-text "c")
+                                 :definition (make-text "3"))))))
+                  "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>"))
 
 (test image
-  (let* ((src "fig.jpg")
-         (desc "desc")
-         (document
-          (doc
-           image
-           (:source src
-            :description desc))))
-    (emit-equal document
-                (format nil "<img src=~S alt=~S title=~S/>" src desc desc))))
+      (let* ((src "fig.jpg")
+             (desc "desc")
+             (document
+               (doc
+                image
+                (:source src
+                 :description desc))))
+        (emit-equal document
+                    (format nil "<img src=~S alt=~S title=~S/>" src desc desc))))
 
 (test figure
-  (let* ((src "fig.jpg")
-         (desc "desc")
-         (figdesc "description")
-         (document
-          (doc
-           figure
-           (:image (doc
-                    image
-                    (:source src
-                     :description desc))
-            :description (list (mk-text figdesc))))))
-    (emit-equal document
-                (format nil
-                        "<figure><img src=~S alt=~S title=~S/><figcaption>~A</figcaption></figure>"
-                        src desc desc figdesc))))
+      (let* ((src "fig.jpg")
+             (desc "desc")
+             (figdesc "description")
+             (document
+               (doc
+                figure
+                (:image (doc
+                         image
+                         (:source src
+                          :description desc))
+                 :description (list (make-text figdesc))))))
+        (emit-equal document
+                    (format nil
+                            "<figure><img src=~S alt=~S title=~S/><figcaption>~A</figcaption></figure>"
+                            src desc desc figdesc))))
 
 (test table
-  (let* ((matrix
-           '((1 2 3)
-             (4 5 6)
-             (7 8 9)))
-         (document
-           (doc
-            table
-            (:rows
-             (loop for row in matrix collecting
+      (let* ((matrix
+               '((1 2 3)
+                 (4 5 6)
+                 (7 8 9)))
+             (document
                (doc
-                row
-                (:cells
-                 (loop for n in row collecting
-                   (doc cell () (text-node (:text (write-to-string n))))))))))))
-    (emit-equal document
-                (format nil "<table>~{<tr>~{<td>~A</td>~}</tr>~}</table>"
-                        matrix))))
+                table
+                (:rows
+                 (loop for row in matrix collecting
+                   (doc
+                    row
+                    (:cells
+                     (loop for n in row collecting
+                       (doc cell () (text-node (:text (write-to-string n))))))))))))
+        (emit-equal document
+                    (format nil "<table>~{<tr>~{<td>~A</td>~}</tr>~}</table>"
+                            matrix))))
 
 (test section
-  (let ((document
-          (doc
-           section
-           (:title (mk-text "Sec 1"))
-           (section
-            (:title (mk-text "Sec 1.1"))
-            (section
-             (:title (mk-text "Sec 1.1.1"))))
-           (section
-            (:title (mk-text "Sec 1.2"))))))
-    (emit-equal document
-                (format nil "~{~A~}"
-                        (list "<h1>Sec 1</h1>"
-                              "<h2>Sec 1.1</h2>"
-                              "<h3>Sec 1.1.1</h3>"
-                              "<h2>Sec 1.2</h2>")))))
+      (let ((document
+              (doc
+               section
+               (:title (make-text "Sec 1"))
+               (section
+                (:title (make-text "Sec 1.1"))
+                (section
+                 (:title (make-text "Sec 1.1.1"))))
+               (section
+                (:title (make-text "Sec 1.2"))))))
+        (emit-equal document
+                    (format nil "~{~A~}"
+                            (list "<h1>Sec 1</h1>"
+                                  "<h2>Sec 1.1</h2>"
+                                  "<h3>Sec 1.1.1</h3>"
+                                  "<h2>Sec 1.2</h2>")))))
 
 (test document
-  (let ((document
-          (doc
-           document
-           (:title "My Title")
-           (text-node
-            (:text "test")))))
-    (emit-equal document
-                "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
+      (let ((document
+              (doc
+               document
+               (:title "My Title")
+               (text-node
+                (:text "test")))))
+        (emit-equal document
+                    "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
 (test multi-file-emission
-  (let ((doc
-          (doc
-           document
-           (:title "My Document")
-           (section
-            (:title (mk-text "Overview"))
-            (text-node
-             (:text "text"))
-            (section
-             (:title (mk-text "History"))
-             (text-node
-              (:text "history"))
-             (section
-              (:title (mk-text "Motivation"))
-              (text-node
-               (:text "sample &")))))
-           (section
-            (:title (mk-text "Tutorial"))
-            (bold
-             ()
-             (text-node
-              (:text "bold"))))))
-        (output-directory
-          (asdf:system-relative-pathname :common-html-test #p"html/")))
-    (finishes
-      (ensure-directories-exist output-directory))
-    (finishes
-     (common-html.multi-emit:multi-emit doc output-directory))
+      (let ((doc
+              (doc
+               document
+               (:title "My Document")
+               (section
+                (:title (make-text "Overview"))
+                (text-node
+                 (:text "text"))
+                (section
+                 (:title (make-text "History"))
+                 (text-node
+                  (:text "history"))
+                 (section
+                  (:title (make-text "Motivation"))
+                  (text-node
+                   (:text "sample &")))))
+               (section
+                (:title (make-text "Tutorial"))
+                (bold
+                 ()
+                 (text-node
+                  (:text "bold"))))))
+            (output-directory
+              (asdf:system-relative-pathname :common-html-test #p"html/")))
+        (finishes
+         (ensure-directories-exist output-directory))
+        (finishes
+         (common-html.multi-emit:multi-emit doc output-directory))
+        (is
+         (equal (length (uiop:directory-files output-directory))
+                4))
+        (macrolet ((test-file (filename content)
+                     `(let ((file (merge-pathnames ,filename output-directory)))
+                        (is-true
+                         (probe-file file))
+                        (is
+                         (equal (uiop:read-file-string file)
+                                ,content)))))
+          (test-file
+           "overview.html"
+           "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
+          (test-file
+           "history.html"
+           "<!DOCTYPE html><html><head><title>History</title></head><body>history</body></html>")
+          (test-file
+           "motivation.html"
+           "<!DOCTYPE html><html><head><title>Motivation</title></head><body>sample &amp;</body></html>")
+          (test-file
+           "tutorial.html"
+           "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
+          (finishes
+           (uiop:delete-directory-tree output-directory :validate t))
+          ;; Now, we test emission but with a fixed depth
+          (finishes
+           (ensure-directories-exist output-directory))
+          (finishes
+           (common-html.multi-emit:multi-emit doc output-directory :max-depth 2))
+          (is
+           (equal (length (uiop:directory-files output-directory))
+                  3))
+          (test-file
+           "overview.html"
+           "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
+          (test-file
+           "history.html"
+           "<!DOCTYPE html><html><head><title>History</title></head><body>history<h1>Motivation</h1>sample &amp;</body></html>")
+          (test-file
+           "tutorial.html"
+           "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
+          (finishes
+           (uiop:delete-directory-tree output-directory :validate t)))))
+
+(test toc
+  (let* ((doc (doc
+               document
+               ()
+               (section
+                (:title (make-text "Section 1"))
+                (content-node
+                 ()
+                 (content-node
+                  ()
+                  (section
+                   (:title (make-text "Section 1.1"))))))
+               (section
+                (:title (make-text "Section 2")))))
+         (toc (common-doc.ops:table-of-contents doc)))
     (is
-     (equal (length (uiop:directory-files output-directory))
-            4))
-    (macrolet ((test-file (filename content)
-                 `(let ((file (merge-pathnames ,filename output-directory)))
-                    (is-true
-                     (probe-file file))
-                    (is
-                     (equal (uiop:read-file-string file)
-                            ,content)))))
-      (test-file
-       "overview.html"
-       "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
-      (test-file
-       "history.html"
-       "<!DOCTYPE html><html><head><title>History</title></head><body>history</body></html>")
-      (test-file
-       "motivation.html"
-       "<!DOCTYPE html><html><head><title>Motivation</title></head><body>sample &amp;</body></html>")
-      (test-file
-       "tutorial.html"
-       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
-      (finishes
-        (uiop:delete-directory-tree output-directory :validate t))
-      ;; Now, we test emission but with a fixed depth
-      (finishes
-        (ensure-directories-exist output-directory))
-      (finishes
-        (common-html.multi-emit:multi-emit doc output-directory :max-depth 2))
-      (is
-       (equal (length (uiop:directory-files output-directory))
-              3))
-      (test-file
-       "overview.html"
-       "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
-      (test-file
-       "history.html"
-       "<!DOCTYPE html><html><head><title>History</title></head><body>history<h1>Motivation</h1>sample &amp;</body></html>")
-      (test-file
-       "tutorial.html"
-       "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
-      (finishes
-        (uiop:delete-directory-tree output-directory :validate t)))))
+     (equal (common-html.toc:toc-to-html-string toc)
+            "<div class='toc'><ul class='toc-section'><span class='section-title'>Section 1</span><li><ul class='toc-section'><span class='section-title'>Section 1.1</span></ul></li></ul><ul class='toc-section'><span class='section-title'>Section 2</span></ul></div>"))))
 
 (run! 'tests)
