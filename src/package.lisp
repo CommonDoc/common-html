@@ -15,6 +15,11 @@
            :template-section)
   (:documentation "Document templates."))
 
+(defpackage common-html.multi-emit
+  (:use :cl :common-doc)
+  (:export :multi-emit
+           :*section-table*))
+
 (defpackage common-html.emitter
   (:use :cl :common-doc)
   (:import-from :common-html.multi-emit
@@ -22,11 +27,6 @@
   (:export :node-to-stream
            :node-to-html-string)
   (:documentation "Emit HTML5 from a CommonDoc document."))
-
-(defpackage common-html.multi-emit
-  (:use :cl :common-doc)
-  (:export :multi-emit
-           :*section-table*))
 
 (defpackage common-html
   (:use :cl)
