@@ -125,12 +125,10 @@
 
 (define-emitter (definition definition)
   "Emit a definition list item."
-  (with-tag ("dt" (term definition))
-    (loop for child in (term definition) do
-      (emit child)))
-  (with-tag ("dd" (definition definition))
-    (loop for child in (definition definition) do
-      (emit child))))
+  (with-tag ("dt" nil)
+    (emit (term definition)))
+  (with-tag ("dd" nil)
+    (emit (definition definition))))
 
 (define-simple-emitter unordered-list "ul")
 (define-simple-emitter ordered-list "ol")
