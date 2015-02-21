@@ -126,9 +126,11 @@
 (define-emitter (definition definition)
   "Emit a definition list item."
   (with-tag ("dt" (term definition))
-    (emit (term definition)))
+    (loop for child in (term definition) do
+      (emit child)))
   (with-tag ("dd" (definition definition))
-    (emit (definition definition))))
+    (loop for child in (definition definition) do
+      (emit child))))
 
 (define-simple-emitter unordered-list "ul")
 (define-simple-emitter ordered-list "ol")
