@@ -116,16 +116,16 @@
                    (:children (list
                                (doc
                                 definition
-                                (:term (make-text "a")
-                                 :definition (make-text "1")))
+                                (:term (list (make-text "a"))
+                                 :definition (list (make-text "1"))))
                                (doc
                                 definition
-                                (:term (make-text "b")
-                                 :definition (make-text "2")))
+                                (:term (list (make-text "b"))
+                                 :definition (list (make-text "2"))))
                                (doc
                                 definition
-                                (:term (make-text "c")
-                                 :definition (make-text "3"))))))
+                                (:term (list (make-text "c"))
+                                 :definition (list (make-text "3")))))))
                   "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>"))
 
 (test image
