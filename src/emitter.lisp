@@ -88,10 +88,11 @@
 
 (define-emitter (code code-block)
   "Emit a code block."
-  (with-tag ("code" code
-             :attributes (list (cons "language"
-                                     (language code))))
-    (emit (children code))))
+  (with-tag ("pre" nil)
+    (with-tag ("code" code
+               :attributes (list (cons "language"
+                                       (language code))))
+      (emit (children code)))))
 
 (define-simple-emitter inline-quote "q")
 (define-simple-emitter block-quote "blockquote")
