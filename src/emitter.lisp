@@ -104,11 +104,8 @@
          (url (if doc-ref
                   (format nil "~A.html/#~A" doc-ref sec-ref)
                   ;; Are we in a multi-file emission context?
-                  (if *section-table*
-                      (let ((file (gethash *section-pos* *section-table*)))
-                        (prog1
-                            (format nil "~A.html" file)
-                          (incf *section-pos*)))
+                  (if *multi-emit-p*
+                      (format nil "~A.html" sec-ref)
                       (format nil "#~A" sec-ref)))))
     (with-tag ("a" ref
                :attributes (list (cons "href" url)))
