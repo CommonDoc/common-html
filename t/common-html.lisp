@@ -275,23 +275,4 @@
           (finishes
            (uiop:delete-directory-tree output-directory :validate t)))))
 
-(test toc
-  (let* ((doc (doc
-               document
-               ()
-               (section
-                (:title (make-text "Section 1"))
-                (content-node
-                 ()
-                 (content-node
-                  ()
-                  (section
-                   (:title (make-text "Section 1.1"))))))
-               (section
-                (:title (make-text "Section 2")))))
-         (toc (common-doc.ops:table-of-contents doc)))
-    (is
-     (equal (common-html.toc:toc-to-html-string toc)
-            "<div class='toc'><ul class='toc-section'><span class='section-title'>Section 1</span><li><ul class='toc-section'><span class='section-title'>Section 1.1</span></ul></li></ul><ul class='toc-section'><span class='section-title'>Section 2</span></ul></div>"))))
-
 (run! 'tests)
