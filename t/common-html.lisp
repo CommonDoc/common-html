@@ -275,4 +275,21 @@
           (finishes
            (uiop:delete-directory-tree output-directory :validate t)))))
 
+(test toc
+  (let ((doc (doc
+              document
+              ()
+              (section
+               (:title (make-text "Section 1"))
+               (content-node
+                ()
+                (content-node
+                 ()
+                 (section
+                  (:title (make-text "Section 1.1"))))))
+              (section
+               (:title (make-text "Section 2"))))))
+    (print (common-html.toc:single-file-toc doc))
+    (print (common-html.toc:multi-file-toc doc))))
+
 (run! 'tests)
