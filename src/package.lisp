@@ -18,21 +18,15 @@
 (defpackage common-html.multi-emit
   (:use :cl :common-doc)
   (:export :multi-emit
-           :*section-table*))
+           :*multi-emit-p*))
 
 (defpackage common-html.emitter
   (:use :cl :common-doc)
   (:import-from :common-html.multi-emit
-                :*section-table*)
+                :*multi-emit-p*)
   (:export :node-to-stream
            :node-to-html-string)
   (:documentation "Emit HTML5 from a CommonDoc document."))
-
-(defpackage common-html.toc
-  (:use :cl)
-  (:export :toc-to-html-string
-           :html-toc)
-  (:documentation "Create an HTML table of contents."))
 
 (defpackage common-html
   (:use :cl)

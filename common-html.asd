@@ -13,7 +13,6 @@
                 :components
                 ((:file "package")
                  (:file "template")
-                 (:file "toc")
                  (:file "emitter")
                  (:file "multi-emit")
                  (:file "common-html"))))
