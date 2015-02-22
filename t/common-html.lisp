@@ -2,7 +2,7 @@
 (defpackage common-html-test
   (:use :cl :fiveam :common-doc)
   (:import-from :common-doc.util
-   :doc
+                :doc
                 :make-text))
 (in-package :common-html-test)
 
@@ -294,6 +294,6 @@
             "<ol class=\"toc\"><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol><a href=\"#section-2\">Section 2</a></ol>"))
     (is
      (equal (common-html.toc:multi-file-toc doc)
-            "<ol class=\"toc\"><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol><a href=\"#section-2\">Section 2</a></ol>"))))
+            "<ol class=\"toc\"><a href=\"section-1.html\">Section 1</a><ol><li><a href=\"section-1.1.html\">Section 1.1</a></li></ol><a href=\"section-2.html\">Section 2</a></ol>"))))
 
 (run! 'tests)
