@@ -28,6 +28,12 @@
            :node-to-html-string)
   (:documentation "Emit HTML5 from a CommonDoc document."))
 
+(defpackage common-html.toc
+  (:use :cl)
+  (:export :single-file-toc
+           :multi-file-toc)
+  (:documentation "Utilities for building an HTML table of contents."))
+
 (defpackage common-html
   (:use :cl)
   (:export :html)

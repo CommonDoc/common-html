@@ -14,6 +14,7 @@
                 ((:file "package")
                  (:file "template")
                  (:file "emitter")
+                 (:file "toc")
                  (:file "multi-emit")
                  (:file "common-html"))))
   :description "An HTML parser/emitter for CommonDoc."
