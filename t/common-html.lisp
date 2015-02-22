@@ -289,7 +289,11 @@
                   (:title (list (make-text "Section 1.1")))))))
               (section
                (:title (list (make-text "Section 2")))))))
-    (print (common-html.toc:single-file-toc doc))
-    (print (common-html.toc:multi-file-toc doc))))
+    (is
+     (equal (common-html.toc:single-file-toc doc)
+            "<ol class=\"toc\"><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol><a href=\"#section-2\">Section 2</a></ol>"))
+    (is
+     (equal (common-html.toc:multi-file-toc doc)
+            "<ol class=\"toc\"><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol><a href=\"#section-2\">Section 2</a></ol>"))))
 
 (run! 'tests)
