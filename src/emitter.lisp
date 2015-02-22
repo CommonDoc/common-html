@@ -8,8 +8,6 @@
 (defvar *section-depth* 1
   "The depth of `section` classes. Used to produce header numbers, e.g. `h1, `h3`.")
 
-(defvar *section-pos* 0)
-
 ;;; Utilities
 
 (defun print-attribute (key value)
@@ -181,8 +179,7 @@
 (defun node-to-stream (node stream)
   "Emit a node into a stream."
   (let ((*output-stream* stream)
-        (*section-depth* 1)
-        (*section-pos* 1))
+        (*section-depth* 1))
     (emit node)))
 
 (defun node-to-html-string (node)
