@@ -179,13 +179,13 @@
       (let ((document
               (doc
                section
-               (:title (make-text "Sec 1"))
+               (:title (list (make-text "Sec 1")))
                (section
-                (:title (make-text "Sec 1.1"))
+                (:title (list (make-text "Sec 1.1")))
                 (section
-                 (:title (make-text "Sec 1.1.1"))))
+                 (:title (list (make-text "Sec 1.1.1")))))
                (section
-                (:title (make-text "Sec 1.2"))))))
+                (:title (list (make-text "Sec 1.2")))))))
         (emit-equal document
                     (format nil "~{~A~}"
                             (list "<h1>Sec 1</h1>"
@@ -208,19 +208,19 @@
                document
                (:title "My Document")
                (section
-                (:title (make-text "Overview"))
+                (:title (list (make-text "Overview")))
                 (text-node
                  (:text "text"))
                 (section
-                 (:title (make-text "History"))
+                 (:title (list (make-text "History")))
                  (text-node
                   (:text "history"))
                  (section
-                  (:title (make-text "Motivation"))
+                  (:title (list (make-text "Motivation")))
                   (text-node
                    (:text "sample &")))))
                (section
-                (:title (make-text "Tutorial"))
+                (:title (list (make-text "Tutorial")))
                 (bold
                  ()
                  (text-node
@@ -280,15 +280,15 @@
               document
               ()
               (section
-               (:title (make-text "Section 1"))
+               (:title (list (make-text "Section 1")))
                (content-node
                 ()
                 (content-node
                  ()
                  (section
-                  (:title (make-text "Section 1.1"))))))
+                  (:title (list (make-text "Section 1.1")))))))
               (section
-               (:title (make-text "Section 2"))))))
+               (:title (list (make-text "Section 2")))))))
     (print (common-html.toc:single-file-toc doc))
     (print (common-html.toc:multi-file-toc doc))))
 
