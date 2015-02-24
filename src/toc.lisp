@@ -8,5 +8,5 @@
 (defun multi-file-toc (doc)
   "Generate and HTML table of contents for a multi-file document."
   (common-doc.ops:fill-unique-refs doc)
-  (let ((common-html.multi-emit:*multi-emit-p* t))
+  (let ((common-html.multi-emit:*multi-emit* t))
     (common-html.emitter:node-to-html-string (common-doc.ops:table-of-contents doc))))

@@ -6,29 +6,31 @@
   ()
   (:documentation "A template."))
 
-(defgeneric render (template document children-string)
+(defgeneric render (template document content-string)
   (:documentation "Render a document instance and its children (As an HTML
   string) into an HTML string."))
 
-(defgeneric render-section (template document section-title section-reference
-                            content-string)
+(defgeneric render-section (template document section content-string)
   (:documentation "Render a section of a document into an HTML string."))
 
 ;;; Defaults
 
-(defmethod render ((template template) (document document) children-string)
+(defmethod render ((template template) (document document) content-string)
   "The simplest template."
-  (format nil "<!DOCTYPE html><html><head><title>~A</title></head><body>~A</body></html>"
-          (title document)
-          children-string))
+  (markup:html5
+   (:head
+    (:title (title document)))
+   (:body
+    (markup:raw content-string))))
 
-(defmethod render-section ((template template) (document document) section-title
-                           section-reference content-string)
+(defmethod render-section ((template template) (document document) (section section)
+                           content-string)
   "The simplest section template."
-  (declare (ignore section-reference))
-  (format nil "<!DOCTYPE html><html><head><title>~A</title></head><body>~A</body></html>"
-          section-title
-          content-string))
+  (markup:html5
+   (:head
+    (:title (common-doc.ops:collect-all-text (title section))))
+   (:body
+    (markup:raw content-string))))
 
 (defvar *template* (make-instance 'template)
   "The template that will be used by template and template-section.")
@@ -42,7 +44,6 @@
   "Like render, only using the *template* special variable."
   (render *template* document children-string))
 
-(defun template-section (document section-title section-reference content-string)
+(defun template-section (document section content-string)
   "Like render-section, but uses the *template* special variable."
-  (render-section *template* document section-title section-reference
-                  content-string))
+  (render-section *template* document section content-string))

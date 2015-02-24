@@ -4,6 +4,8 @@
   (:use :cl)
   (:import-from :common-doc
                 :document
+                :section
+                :reference
                 :title
                 :children)
   (:export :template
@@ -18,12 +20,12 @@
 (defpackage common-html.multi-emit
   (:use :cl :common-doc)
   (:export :multi-emit
-           :*multi-emit-p*))
+           :*multi-emit*))
 
 (defpackage common-html.emitter
   (:use :cl :common-doc)
   (:import-from :common-html.multi-emit
-                :*multi-emit-p*)
+                :*multi-emit*)
   (:export :node-to-stream
            :node-to-html-string)
   (:documentation "Emit HTML5 from a CommonDoc document."))

@@ -102,7 +102,7 @@
          (url (if doc-ref
                   (format nil "~A.html/#~A" doc-ref sec-ref)
                   ;; Are we in a multi-file emission context?
-                  (if *multi-emit-p*
+                  (if *multi-emit*
                       (format nil "~A.html" sec-ref)
                       (format nil "#~A" sec-ref)))))
     (with-tag ("a" ref
