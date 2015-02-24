@@ -17,20 +17,18 @@
 
 (defmethod render ((template template) (document document) content-string)
   "The simplest template."
-  (markup:html5
-   (:head
-    (:title (title document)))
-   (:body
-    (markup:raw content-string))))
+  (format nil
+          "<!DOCTYPE html><html><head><title>~A</title></head><body>~A</body></html>"
+          (plump:encode-entities (title document))
+          content-string))
 
 (defmethod render-section ((template template) (document document) (section section)
                            content-string)
   "The simplest section template."
-  (markup:html5
-   (:head
-    (:title (common-doc.ops:collect-all-text (title section))))
-   (:body
-    (markup:raw content-string))))
+  (format nil
+          "<!DOCTYPE html><html><head><title>~A</title></head><body>~A</body></html>"
+          (plump:encode-entities (common-doc.ops:collect-all-text (title section)))
+          content-string))
 
 (defvar *template* (make-instance 'template)
   "The template that will be used by template and template-section.")
