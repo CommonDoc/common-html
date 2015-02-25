@@ -88,7 +88,7 @@
   "Emit a code block."
   (with-tag ("pre" nil)
     (with-tag ("code" code
-               :attributes (list (cons "language"
+               :attributes (list (cons "class"
                                        (language code))))
       (emit (children code)))))
 
