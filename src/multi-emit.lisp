@@ -4,10 +4,12 @@
   "Whether we are in multi-file emission or not. nil by default.")
 
 (defmethod emit-node ((node document-node) &key directory doc depth max-depth)
+  "Emit a document node."
   (declare (ignore directory doc depth max-depth))
   t)
 
 (defmethod emit-node ((node content-node) &key directory doc depth max-depth)
+  "Emit a content node."
   (loop for child in (children node) do
     (emit-node child
                :directory directory
@@ -16,6 +18,7 @@
                :max-depth max-depth)))
 
 (defmethod emit-node ((section section) &key directory doc depth max-depth)
+  "Emit a section node."
   (let ((ordinary-nodes (list))
         (sub-sections (list))
         (section-ref (reference section)))
