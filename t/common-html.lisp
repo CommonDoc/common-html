@@ -268,7 +268,7 @@
        "<!DOCTYPE html><html><head><title>Overview</title></head><body>text</body></html>")
       (test-file
        "history.html"
-       "<!DOCTYPE html><html><head><title>History</title></head><body>history<h1>Motivation</h1>sample &amp;</body></html>")
+       "<!DOCTYPE html><html><head><title>History</title></head><body>history<h1 id=\"motivation\">Motivation</h1>sample &amp;</body></html>")
       (test-file
        "tutorial.html"
        "<!DOCTYPE html><html><head><title>Tutorial</title></head><body><b>bold</b></body></html>")
