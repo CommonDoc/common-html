@@ -23,7 +23,7 @@
            :*multi-emit*))
 
 (defpackage common-html.emitter
-  (:use :cl :common-doc)
+  (:use :cl :common-doc :anaphora)
   (:import-from :common-html.multi-emit
                 :*multi-emit*)
   (:export :node-to-stream

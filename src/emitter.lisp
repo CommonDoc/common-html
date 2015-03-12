@@ -161,7 +161,9 @@
   "Emit a section."
   (macrolet ((section-emitter (tag)
                `(progn
-                  (with-tag (,tag section)
+                  (with-tag (,tag section
+                                  :attributes (aif (reference section)
+                                                   (list (cons "id" it))))
                     (emit (title section)))
                   (incf *section-depth*)
                   (if (slot-boundp section 'children)
