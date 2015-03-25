@@ -22,7 +22,8 @@ script:
                  (lambda (c h)
                    (declare (ignore c h))
                    (uiop:quit -1)))'
-       -e '(coveralls:with-coveralls (ql:quickload :common-html-test))'
+       -e '(coveralls:with-coveralls ()
+             (ql:quickload :common-html-test))'
 
 notifications:
   email:
