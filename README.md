@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/CommonDoc/common-html.svg)](https://travis-ci.org/CommonDoc/common-html)
 
+[![Coverage Status](https://coveralls.io/repos/CommonDoc/common-html/badge.svg?branch=master)](https://coveralls.io/r/CommonDoc/common-html?branch=master)
+
 An HTML parser/emitter for [CommonDoc](https://github.com/CommonDoc/common-doc).
 
 # Usage
