@@ -8,6 +8,9 @@
 (defvar *section-depth* 1
   "The depth of `section` classes. Used to produce header numbers, e.g. `h1, `h3`.")
 
+(defvar *image-base-url* nil
+  "The base URL for images.")
+
 ;;; Utilities
 
 (defun print-attribute (key value)
@@ -132,11 +135,15 @@
 
 (define-emitter (image image)
   "Emit an image."
-  (with-tag ("img" image
-                   :attributes (list (cons "src" (source image))
-                                     (cons "alt" (description image))
-                                     (cons "title" (description image)))
-                   :self-closing-p t)))
+  (with-slots (source) image
+    (let ((src (cons "src" (if *image-base-url*
+                               (concatenate 'string *image-base-url* source)
+                               source))))
+      (with-tag ("img" image
+                       :attributes (list src
+                                         (cons "alt" (description image))
+                                         (cons "title" (description image)))
+                       :self-closing-p t)))))
 
 (define-emitter (fig figure)
   "Emit a figure."
