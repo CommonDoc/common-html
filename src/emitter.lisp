@@ -140,9 +140,10 @@
                                (concatenate 'string *image-base-url* source)
                                source))))
       (with-tag ("img" image
-                       :attributes (list src
-                                         (cons "alt" (description image))
-                                         (cons "title" (description image)))
+                       :attributes (append (list src)
+                                           (aif (description image)
+                                                (list (cons "alt" it)
+                                                      (cons "title" it))))
                        :self-closing-p t)))))
 
 (define-emitter (fig figure)
