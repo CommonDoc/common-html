@@ -28,7 +28,8 @@
                 :*multi-emit*)
   (:export :node-to-stream
            :node-to-html-string
-           :*image-base-url*)
+           :*image-format-control*
+           :*document-section-format-control*)
   (:documentation "Emit HTML5 from a CommonDoc document."))
 
 (defpackage common-html.toc

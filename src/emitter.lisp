@@ -8,8 +8,11 @@
 (defvar *section-depth* 1
   "The depth of `section` classes. Used to produce header numbers, e.g. `h1, `h3`.")
 
-(defvar *image-base-url* nil
-  "The base URL for images.")
+(defvar *image-format-control* nil
+  "A format control string to render image URLs.")
+
+(defvar *document-section-format-control* "~A.html/#~A"
+  "A format control string used to render document+section links.")
 
 ;;; Utilities
 
@@ -103,7 +106,10 @@
   (let* ((sec-ref (section-reference ref))
          (doc-ref (document-reference ref))
          (url (if doc-ref
-                  (format nil "~A.html/#~A" doc-ref sec-ref)
+                  (format nil
+                          *document-section-format-control*
+                          doc-ref
+                          sec-ref)
                   ;; Are we in a multi-file emission context?
                   (if *multi-emit*
                       (format nil "~A.html" sec-ref)
@@ -136,8 +142,8 @@
 (define-emitter (image image)
   "Emit an image."
   (with-slots (source) image
-    (let ((src (cons "src" (if *image-base-url*
-                               (concatenate 'string *image-base-url* source)
+    (let ((src (cons "src" (if *image-format-control*
+                               (format nil *image-format-control* source)
                                source))))
       (with-tag ("img" image
                        :attributes (append (list src)
