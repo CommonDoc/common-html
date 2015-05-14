@@ -1,9 +1,6 @@
 (in-package :cl-user)
 (defpackage common-html-test
-  (:use :cl :fiveam :common-doc)
-  (:import-from :common-doc.util
-                :doc
-                :make-text))
+  (:use :cl :fiveam :common-doc))
 (in-package :common-html-test)
 
 ;;; Utils
@@ -14,7 +11,14 @@
            ,string)))
 
 (defun make-text-item (string)
-  (doc list-item () (text-node (:text string))))
+  (make-list-item (list (make-text string))))
+
+(defmacro test-markup (constructor tag-name)
+  `(emit-equal
+    (,constructor
+     (list
+      (make-text "test")))
+   ,(format nil "<~A>test</~A>" tag-name tag-name)))
 
 ;;; Tests
 
@@ -23,119 +27,66 @@
 (in-suite tests)
 
 (test text
-      (emit-equal (make-text "test") "test"))
+  (emit-equal (make-text "test")
+              "test"))
 
 (test paragraph
-  (emit-equal (doc
-               paragraph
-               ()
-               (text-node
-                (:text "test")))
-              "<p>test</p>"))
+  (test-markup make-paragraph "p"))
 
 (test markup
-  (emit-equal (doc
-               bold
-               ()
-               (text-node
-                (:text "test")))
-              "<b>test</b>")
-  (emit-equal (doc
-               italic
-               ()
-               (text-node
-                (:text "test")))
-              "<i>test</i>")
-  (emit-equal (doc
-               underline
-               ()
-               (text-node
-                (:text "test")))
-              "<u>test</u>")
-  (emit-equal (doc
-               strikethrough
-               ()
-               (text-node
-                (:text "test")))
-              "<strike>test</strike>")
-  (emit-equal (doc
-               code
-               ()
-               (text-node
-                (:text "test")))
-              "<code>test</code>")
-  (emit-equal (doc
-               superscript
-               ()
-               (text-node
-                (:text "test")))
-              "<sup>test</sup>")
-  (emit-equal (doc
-               subscript
-               ()
-               (text-node
-                (:text "test")))
-              "<sub>test</sub>")
-  (emit-equal (doc
-               bold
-               ()
-               (italic
-                ()
-                (underline
-                 ()
-                 (text-node
-                  (:text "test")))))
+  (test-markup make-bold "b")
+  (test-markup make-italic "i")
+  (test-markup make-underline "u")
+  (test-markup make-strikethrough "strike")
+  (test-markup make-code "code")
+  (test-markup make-superscript "sup")
+  (test-markup make-subscript "sub")
+  (emit-equal (make-bold
+               (list
+                (make-italic
+                 (list
+                  (make-underline
+                   (list
+                    (make-text "test")))))))
               "<b><i><u>test</u></i></b>"))
 
 (test link
   (let ((uri "http://example.com/"))
-    (emit-equal (doc
-                 web-link
-                 (:uri (quri:uri uri))
-                 (text-node
-                  (:text "test")))
+    (emit-equal (make-web-link uri
+                               (list
+                                (make-text "test")))
                 (format nil "<a href=\"~A\">test</a>" uri))))
 
 (test list
-  (emit-equal (doc
-               unordered-list
-               (:children (list
-                           (make-text-item "1")
-                           (make-text-item "2")
-                           (make-text-item "3"))))
+  (emit-equal (make-unordered-list
+               (list
+                (make-text-item "1")
+                (make-text-item "2")
+                (make-text-item "3")))
               "<ul><li>1</li><li>2</li><li>3</li></ul>")
-  (emit-equal (doc
-               ordered-list
-               (:children (list
-                           (make-text-item "1")
-                           (make-text-item "2")
-                           (make-text-item "3"))))
+  (emit-equal (make-ordered-list
+               (list
+                (make-text-item "1")
+                (make-text-item "2")
+                (make-text-item "3")))
               "<ol><li>1</li><li>2</li><li>3</li></ol>")
-  (emit-equal (doc
-               definition-list
-               (:children (list
-                           (doc
-                            definition
-                            (:term (list (make-text "a"))
-                             :definition (list (make-text "1"))))
-                           (doc
-                            definition
-                            (:term (list (make-text "b"))
-                             :definition (list (make-text "2"))))
-                           (doc
-                            definition
-                            (:term (list (make-text "c"))
-                             :definition (list (make-text "3")))))))
+  (emit-equal (make-definition-list
+               (list
+                (make-definition
+                 (list (make-text "a"))
+                 (list (make-text "1")))
+                (make-definition
+                 (list (make-text "b"))
+                 (list (make-text "2")))
+                (make-definition
+                 (list (make-text "c"))
+                 (list (make-text "3")))))
               "<dl><dt>a</dt><dd>1</dd><dt>b</dt><dd>2</dd><dt>c</dt><dd>3</dd></dl>"))
 
 (test image
   (let* ((src "fig.jpg")
          (desc "desc")
-         (document
-           (doc
-            image
-            (:source src
-             :description desc))))
+         (document (make-image src :description desc)))
     (emit-equal document
                 (format nil "<img src=~S alt=~S title=~S/>" src desc desc))))
 
@@ -144,13 +95,10 @@
          (desc "desc")
          (figdesc "description")
          (document
-           (doc
-            figure
-            (:image (doc
-                     image
-                     (:source src
-                      :description desc))
-             :description (list (make-text figdesc))))))
+           (make-figure
+            (make-image src :description desc)
+            (list
+             (make-text figdesc)))))
     (emit-equal document
                 (format nil
                         "<figure><img src=~S alt=~S title=~S/><figcaption>~A</figcaption></figure>"
@@ -162,30 +110,26 @@
              (4 5 6)
              (7 8 9)))
          (document
-           (doc
-            table
-            (:rows
-             (loop for row in matrix collecting
-               (doc
-                row
-                (:cells
-                 (loop for n in row collecting
-                   (doc cell () (text-node (:text (write-to-string n))))))))))))
+           (make-table
+            (loop for row in matrix collecting
+              (make-row
+               (loop for n in row collecting
+                (make-cell
+                 (list (make-text (write-to-string n))))))))))
     (emit-equal document
                 (format nil "<table>~{<tr>~{<td>~A</td>~}</tr>~}</table>"
                         matrix))))
 
 (test section
   (let ((document
-          (doc
-           section
-           (:title (list (make-text "Sec 1")))
-           (section
-            (:title (list (make-text "Sec 1.1")))
-            (section
-             (:title (list (make-text "Sec 1.1.1")))))
-           (section
-            (:title (list (make-text "Sec 1.2")))))))
+          (make-section (list (make-text "Sec 1"))
+                        :children
+                        (list
+                         (make-section (list (make-text "Sec 1.1"))
+                                       :children
+                                       (list
+                                        (make-section (list (make-text "Sec 1.1.1")))))
+                         (make-section (list (make-text "Sec 1.2")))))))
     (emit-equal document
                 (format nil "~{~A~}"
                         (list "<h1>Sec 1</h1>"
@@ -194,37 +138,32 @@
                               "<h2>Sec 1.2</h2>")))))
 
 (test document
-  (let ((document
-          (doc
-           document
-           (:title "My Title")
-           (text-node
-            (:text "test")))))
+  (let ((document (make-document "My Title"
+                                 :children (list (make-text "test")))))
     (emit-equal document
                 "<!DOCTYPE html><html><head><title>My Title</title></head><body>test</body></html>")))
+
 (test multi-file-emission
   (let ((doc
-          (doc
-           document
-           (:title "My Document")
-           (section
-            (:title (list (make-text "Overview")))
-            (text-node
-             (:text "text"))
-            (section
-             (:title (list (make-text "History")))
-             (text-node
-              (:text "history"))
-             (section
-              (:title (list (make-text "Motivation")))
-              (text-node
-               (:text "sample &")))))
-           (section
-            (:title (list (make-text "Tutorial")))
-            (bold
-             ()
-             (text-node
-              (:text "bold"))))))
+          (make-document
+           "My Document"
+           :children
+           (list
+            (make-section (list (make-text "Overview"))
+                          :children
+                          (list
+                           (make-text "text")
+                           (make-section (list (make-text "History"))
+                                         :children
+                                         (list
+                                          (make-text "history")
+                                          (make-section (list (make-text "Motivation"))
+                                                        :children
+                                                        (list
+                                                         (make-text "sample &")))))))
+            (make-section (list (make-text "Tutorial"))
+                          :children
+                          (list (make-bold (list (make-text "bold"))))))))
         (output-directory
           (asdf:system-relative-pathname :common-html-test #p"html/")))
     (finishes
@@ -276,19 +215,18 @@
         (uiop:delete-directory-tree output-directory :validate t)))))
 
 (test toc
-  (let ((doc (doc
-              document
-              ()
-              (section
-               (:title (list (make-text "Section 1")))
-               (content-node
-                ()
-                (content-node
-                 ()
-                 (section
-                  (:title (list (make-text "Section 1.1")))))))
-              (section
-               (:title (list (make-text "Section 2")))))))
+  (let ((doc (make-content
+              (list
+               (make-section
+                (list (make-text "Section 1"))
+                :children
+                (list
+                 (make-content
+                  (list
+                   (make-content
+                    (list
+                     (make-section (list (make-text "Section 1.1")))))))))
+               (make-section (list (make-text "Section 2")))))))
     (is
      (equal (common-html.toc:single-file-toc doc)
             "<ol class=\"toc\"><li><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol></li><li><a href=\"#section-2\">Section 2</a></li></ol>"))
