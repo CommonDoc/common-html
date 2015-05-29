@@ -20,12 +20,14 @@
 (defpackage common-html.multi-emit
   (:use :cl :common-doc)
   (:export :multi-emit
-           :*multi-emit*))
+           :*multi-emit*
+           :*section-id-container*))
 
 (defpackage common-html.emitter
   (:use :cl :common-doc :anaphora)
   (:import-from :common-html.multi-emit
-                :*multi-emit*)
+                :*multi-emit*
+                :*section-id-container*)
   (:export :node-to-stream
            :node-to-html-string
            :*image-format-control*

@@ -3,6 +3,15 @@
 (defvar *multi-emit* nil
   "Whether we are in multi-file emission or not. nil by default.")
 
+(defvar *section-id-container* (make-hash-table :test #'equal))
+
+(defun assign-container (section container)
+  (setf (gethash (reference section) *section-id-container*)
+        container)
+  (loop for child in (children section) do
+    (if (typep child 'section)
+        (assign-container child container))))
+
 (defmethod emit-node ((node document-node) &key directory doc depth max-depth)
   "Emit a document node."
   (declare (ignore directory doc depth max-depth))
@@ -22,12 +31,18 @@
   (let ((ordinary-nodes (list))
         (sub-sections (list))
         (section-ref (reference section)))
+    ;; Add the section ID to the location map
+    (setf (gethash section-ref *section-id-container*) t)
+    ;; Go through the children
     (loop for child in (children section) do
       (if (typep child 'section)
           (if (and max-depth (>= depth (1- max-depth)))
               (push child ordinary-nodes)
               (push child sub-sections))
           (push child ordinary-nodes)))
+    (loop for child in ordinary-nodes do
+      (if (typep child 'section)
+          (assign-container child section-ref)))
     (let* ((output-filename (make-pathname :name section-ref
                                            :type "html"
                                            :defaults directory))
@@ -55,7 +70,8 @@
 
 (defmethod multi-emit ((doc document) directory &key max-depth)
   (common-doc.ops:fill-unique-refs doc)
-  (let ((*multi-emit* t))
+  (let ((*multi-emit* t)
+        (*section-id-container* (make-hash-table :test #'equal)))
     (loop for child in (children doc) do
       (emit-node child
                  :directory directory

@@ -112,7 +112,15 @@
                           sec-ref)
                   ;; Are we in a multi-file emission context?
                   (if *multi-emit*
-                      (format nil "~A.html" sec-ref)
+                      ;; What is the filename that contains that section?
+                      (let ((file (gethash sec-ref *section-id-container*)))
+                        (cond
+                          ((null file)
+                           (format nil "~A.html" sec-ref))
+                          ((stringp file)
+                           (format nil "~A.html#~A" file sec-ref))
+                          (t
+                           (format nil "~A.html" sec-ref))))
                       (format nil "#~A" sec-ref)))))
     (with-tag ("a" ref
                :attributes (list (cons "href" url)))
