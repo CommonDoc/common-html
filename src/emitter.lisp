@@ -123,7 +123,11 @@
                            (format nil "~A.html" sec-ref))))
                       (format nil "#~A" sec-ref)))))
     (with-tag ("a" ref
-               :attributes (list (cons "href" url)))
+               :attributes (append
+                            (list (cons "href" url))
+                            (if doc-ref
+                                (cons "data-document" doc-ref))
+                            (list (cons "data-section" sec-ref))))
       (emit (children ref)))))
 
 (define-emitter (link web-link)
