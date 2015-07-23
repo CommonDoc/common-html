@@ -229,9 +229,9 @@
                (make-section (list (make-text "Section 2")))))))
     (is
      (equal (common-html.toc:single-file-toc doc)
-            "<ol class=\"toc\"><li><a href=\"#section-1\">Section 1</a><ol><li><a href=\"#section-1.1\">Section 1.1</a></li></ol></li><li><a href=\"#section-2\">Section 2</a></li></ol>"))
+            "<ol class=\"toc\"><li><a href=\"#section-1\" data-section=\"section-1\">Section 1</a><ol><li><a href=\"#section-1.1\" data-section=\"section-1.1\">Section 1.1</a></li></ol></li><li><a href=\"#section-2\" data-section=\"section-2\">Section 2</a></li></ol>"))
     (is
      (equal (common-html.toc:multi-file-toc doc)
-            "<ol class=\"toc\"><li><a href=\"section-1.html\">Section 1</a><ol><li><a href=\"section-1.1.html\">Section 1.1</a></li></ol></li><li><a href=\"section-2.html\">Section 2</a></li></ol>"))))
+            "<ol class=\"toc\"><li><a href=\"section-1.html\" data-section=\"section-1\">Section 1</a><ol><li><a href=\"section-1.1\" data-section=\"section-1.1\">Section 1.1</a></li></ol></li><li><a href=\"section-2\" data-section=\"section-2\">Section 2</a></li></ol>"))))
 
 (run! 'tests)

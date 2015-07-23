@@ -126,7 +126,7 @@
                :attributes (append
                             (list (cons "href" url))
                             (if doc-ref
-                                (cons "data-document" doc-ref))
+                                (list (cons "data-document" doc-ref)))
                             (list (cons "data-section" sec-ref))))
       (emit (children ref)))))
 
