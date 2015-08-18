@@ -35,6 +35,8 @@
      (format *output-stream* "<~A" tag-name)
      (when ,node
        (emit-metadata (metadata ,node)))
+     (when (reference ,node)
+       (print-attribute "id" (reference ,node)))
      (loop for attribute in ,attributes do
        (print-attribute (first attribute) (rest attribute)))
      (if ,self-closing-p
@@ -66,7 +68,8 @@
 
 (define-emitter (node content-node)
   "The generic emitter for content nodes."
-  (if (metadata node)
+  (if (or (reference node)
+          (metadata node))
       (with-tag ("div" node)
         (loop for child in (children node) do
           (emit child)))
@@ -103,31 +106,31 @@
 
 (define-emitter (ref document-link)
   "Emit a document link."
-  (let* ((sec-ref (section-reference ref))
+  (let* ((node-ref (node-reference ref))
          (doc-ref (document-reference ref))
          (url (if doc-ref
                   (format nil
                           *document-section-format-control*
                           doc-ref
-                          sec-ref)
+                          node-ref)
                   ;; Are we in a multi-file emission context?
                   (if *multi-emit*
                       ;; What is the filename that contains that section?
-                      (let ((file (gethash sec-ref *section-id-container*)))
+                      (let ((file (gethash node-ref *section-id-container*)))
                         (cond
                           ((null file)
-                           (format nil "~A.html" sec-ref))
+                           (format nil "~A.html" node-ref))
                           ((stringp file)
-                           (format nil "~A.html#~A" file sec-ref))
+                           (format nil "~A.html#~A" file node-ref))
                           (t
-                           (format nil "~A.html" sec-ref))))
-                      (format nil "#~A" sec-ref)))))
+                           (format nil "~A.html" node-ref))))
+                      (format nil "#~A" node-ref)))))
     (with-tag ("a" ref
                :attributes (append
                             (list (cons "href" url))
                             (if doc-ref
                                 (list (cons "data-document" doc-ref)))
-                            (list (cons "data-section" sec-ref))))
+                            (list (cons "data-node" node-ref))))
       (emit (children ref)))))
 
 (define-emitter (link web-link)
@@ -187,9 +190,7 @@
   "Emit a section."
   (macrolet ((section-emitter (tag)
                `(progn
-                  (with-tag (,tag section
-                                  :attributes (aif (reference section)
-                                                   (list (cons "id" it))))
+                  (with-tag (,tag section)
                     (emit (title section)))
                   (incf *section-depth*)
                   (if (slot-boundp section 'children)
