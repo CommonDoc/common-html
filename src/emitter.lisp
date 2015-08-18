@@ -34,9 +34,9 @@
   `(let ((tag-name ,tag-name))
      (format *output-stream* "<~A" tag-name)
      (when ,node
-       (emit-metadata (metadata ,node)))
-     (when (reference ,node)
-       (print-attribute "id" (reference ,node)))
+       (emit-metadata (metadata ,node))
+       (when (reference ,node)
+         (print-attribute "id" (reference ,node))))
      (loop for attribute in ,attributes do
        (print-attribute (first attribute) (rest attribute)))
      (if ,self-closing-p
