@@ -21,7 +21,7 @@ script:
                  (lambda (c h)
                    (declare (ignore c h))
                    (uiop:quit -1)))'
-       -e '(coveralls:with-coveralls ()
+       -e '(coveralls:with-coveralls (:exclude (list "t"))
              (ql:quickload :common-html-test))'
 
 notifications:
