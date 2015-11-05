@@ -21,12 +21,13 @@
   (format *output-stream* " ~A=~S" key value))
 
 (defun emit-metadata (hash-table)
-  "Print a hash table as HTML attributes."
+  "Print HTML attributes."
   (when hash-table
     (loop for key being the hash-keys of hash-table
           for value being the hash-values of hash-table
-          do
-             (print-attribute key value))))
+       do
+         (when (alexandria:starts-with-subseq "html:" key)
+           (print-attribute (subseq key 5) value)))))
 
 (defmacro with-tag ((tag-name node &key attributes self-closing-p)
                     &rest body)
@@ -97,7 +98,7 @@
   "Emit a code block."
   (with-tag ("pre" nil)
     (with-tag ("code" code
-               :attributes (list (cons "class"
+               :attributes (list (cons "html:class"
                                        (language code))))
       (emit (children code)))))
 
@@ -116,7 +117,7 @@
                   ;; Are we in a multi-file emission context?
                   (if *multi-emit*
                       ;; What is the filename that contains that section?
-                      (let ((file (gethash node-ref *section-id-container*)))
+                      (let ((file (gethash node-ref *section-tree*)))
                         (cond
                           ((null file)
                            (format nil "~A.html" node-ref))

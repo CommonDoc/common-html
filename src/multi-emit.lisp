@@ -3,10 +3,13 @@
 (defvar *multi-emit* nil
   "Whether we are in multi-file emission or not. nil by default.")
 
-(defvar *section-id-container* (make-hash-table :test #'equal))
+(defvar *section-tree* (make-hash-table :test #'equal)
+  "A map of section references to parent section references.")
+
+(defvar *current-section-id*)
 
 (defun assign-container (section container)
-  (setf (gethash (reference section) *section-id-container*)
+  (setf (gethash (reference section) *section-tree*)
         container)
   (loop for child in (children section) do
     (if (typep child 'section)
@@ -32,7 +35,7 @@
         (sub-sections (list))
         (section-ref (reference section)))
     ;; Add the section ID to the location map
-    (setf (gethash section-ref *section-id-container*) t)
+    (setf (gethash section-ref *section-tree*) t)
     ;; Go through the children
     (loop for child in (children section) do
       (if (typep child 'section)
@@ -71,7 +74,7 @@
 (defmethod multi-emit ((doc document) directory &key max-depth)
   (common-doc.ops:fill-unique-refs doc)
   (let ((*multi-emit* t)
-        (*section-id-container* (make-hash-table :test #'equal)))
+        (*section-tree* (make-hash-table :test #'equal)))
     (loop for child in (children doc) do
       (emit-node child
                  :directory directory

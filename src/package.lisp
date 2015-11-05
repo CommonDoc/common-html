@@ -21,13 +21,13 @@
   (:use :cl :common-doc)
   (:export :multi-emit
            :*multi-emit*
-           :*section-id-container*))
+           :*section-tree*))
 
 (defpackage common-html.emitter
   (:use :cl :common-doc :anaphora)
   (:import-from :common-html.multi-emit
                 :*multi-emit*
-                :*section-id-container*)
+                :*section-tree*)
   (:export :node-to-stream
            :node-to-html-string
            :*image-format-control*

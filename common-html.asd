@@ -8,7 +8,8 @@
   :source-control (:git "git@github.com:CommonDoc/common-html.git")
   :depends-on (:common-doc
                :plump
-               :anaphora)
+               :anaphora
+               :alexandria)
   :components ((:module "src"
                 :serial t
                 :components

@@ -22,6 +22,16 @@ An HTML parser/emitter for [CommonDoc](https://github.com/CommonDoc/common-doc).
 (common-html.emitter:node-to-html-string node) ;; => "<p>test</p>"
 ```
 
+## Attributes
+
+CommonHTML let's you customize the HTML output by inserting attributes (such as
+class names or data attributes) in node metadata. All CommonDoc nodes hold
+optional metadata, as key-value pairs. Every pair where the key starts with
+`html:` will be emitted with this prefix removed.
+
+So, for instance, if a node has a metadata pair like `"html:class" =>
+"theorem"`, the resulting HTML for that node will have `class="theorem"`.
+
 # Multi-file emission
 
 Normally, a document is emitted into HTML as a single file. You can also perform
