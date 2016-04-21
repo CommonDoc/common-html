@@ -146,7 +146,7 @@
 
 (define-emitter (definition definition)
   "Emit a definition list item."
-  (with-tag ("dt" nil)
+  (with-tag ("dt" definition)
     (emit (term definition)))
   (with-tag ("dd" nil)
     (emit (definition definition))))
