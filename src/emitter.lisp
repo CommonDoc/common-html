@@ -56,7 +56,7 @@
   "Emit a list."
   (loop for elem in list do (emit elem)))
 
-(defmacro define-emitter ((node class) &rest body)
+(defmacro define-emitter ((node class) &body body)
   "Define an emitter method."
   `(defmethod emit ((,node ,class))
      ,@body))
